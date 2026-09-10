@@ -25,6 +25,7 @@
 #include <QRandomGenerator>
 
 #include "networkmanager.h"
+#include "network/server_endpoint.h"
 
 namespace xpilot
 {
@@ -113,7 +114,7 @@ namespace xpilot
         } else {
             emit notificationPosted("Connected to network.", MessageType::Info);
         }
-        emit networkConnected(m_connectInfo.Callsign, !m_connectInfo.TowerViewMode);
+        emit networkConnected(m_connectInfo.Callsign, !m_privateNetwork && !m_connectInfo.TowerViewMode);
 
         if(m_connectInfo.TowerViewMode) {
             emit towerviewConnected();
@@ -160,8 +161,13 @@ namespace xpilot
 
     void NetworkManager::OnServerIdentificationReceived(PDUServerIdentification pdu)
     {
-        m_fsd.SendPDU(PDUClientIdentification(m_connectInfo.Callsign, m_clientProperties.ClientID, "xPilot", FSD_VERSION_MAJOR, FSD_VERSION_MINOR,
+        m_fsd.SendPDU(PDUClientIdentification(m_connectInfo.Callsign, m_clientProperties.ClientID, m_privateNetwork ? "K-Pilot" : "xPilot", FSD_VERSION_MAJOR, FSD_VERSION_MINOR,
                                               AppConfig::getInstance()->VatsimId, QSysInfo::machineUniqueId(), ""));
+
+        if(m_privateNetwork) {
+            LoginToNetwork(AppConfig::getInstance()->VatsimPasswordDecrypted);
+            return;
+        }
 
         GetJwtToken().then([&](const QByteArray &response){
             auto json = QJsonDocument::fromJson(response).object();
@@ -910,6 +916,18 @@ namespace xpilot
             m_fsd.SetClientProperties(m_clientProperties);
 
             emit notificationPosted("Connecting to network...", MessageType::Info);
+
+            const QString privateAddress = ServerEndpoint::normalizeAddress(AppConfig::getInstance()->FsdServerAddress);
+            const int privatePort = AppConfig::getInstance()->FsdServerPort;
+            m_privateNetwork = !privateAddress.isEmpty();
+            if(m_privateNetwork) {
+                if(!ServerEndpoint::isValidAddress(privateAddress) || !ServerEndpoint::isValidPort(privatePort)) {
+                    emit notificationPosted("The private server address or port is invalid.", MessageType::Error);
+                    return;
+                }
+                m_fsd.Connect(privateAddress, static_cast<quint32>(privatePort), false);
+                return;
+            }
 
             QString serverName = AppConfig::getInstance()->getNetworkServer();
             if(AppConfig::getInstance()->ServerName == "AUTOMATIC") {

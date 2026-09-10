@@ -139,6 +139,8 @@ void AppConfig::loadConfig()
     Name = getJsonValue(jsonMap, "Name", QString());
     HomeAirport = getJsonValue(jsonMap, "HomeAirport", QString());
     ServerName = getJsonValue(jsonMap, "ServerName", QString());
+    FsdServerAddress = getJsonValue(jsonMap, "FsdServerAddress", QString());
+    FsdServerPort = getJsonValue<int>(jsonMap, "FsdServerPort", 6809);
     InputDevice = getJsonValue(jsonMap, "InputDevice", QString());
     SpeakerDevice = getJsonValue(jsonMap, "SpeakerDevice", QString());
     HeadsetDevice = getJsonValue(jsonMap, "HeadsetDevice", QString());
@@ -227,6 +229,8 @@ bool AppConfig::saveConfig()
     jsonObj["Name"] = trim(Name);
     jsonObj["HomeAirport"] = trim(HomeAirport);
     jsonObj["ServerName"] = trim(ServerName);
+    jsonObj["FsdServerAddress"] = FsdServerAddress.trimmed();
+    jsonObj["FsdServerPort"] = FsdServerPort;
     jsonObj["InputDevice"] = trim(InputDevice);
     jsonObj["SpeakerDevice"] = trim(SpeakerDevice);
     jsonObj["HeadsetDevice"] = trim(HeadsetDevice);
@@ -315,6 +319,8 @@ void AppConfig::applySettings()
     Name = tempName;
     HomeAirport = tempHomeAirport;
     ServerName = tempServerName;
+    FsdServerAddress = tempFsdServerAddress.trimmed();
+    FsdServerPort = tempFsdServerPort;
     SpeakerDevice = tempSpeakerDevice;
     HeadsetDevice = tempHeadsetDevice;
     InputDevice = tempInputDevice;
@@ -357,6 +363,8 @@ void AppConfig::setInitialTempValues()
     tempName = Name;
     tempHomeAirport = HomeAirport;
     tempServerName = ServerName;
+    tempFsdServerAddress = FsdServerAddress;
+    tempFsdServerPort = FsdServerPort;
     tempSpeakerDevice = SpeakerDevice;
     tempHeadsetDevice = HeadsetDevice;
     tempInputDevice = InputDevice;

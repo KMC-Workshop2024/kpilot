@@ -130,6 +130,7 @@ namespace xpilot
         QFile m_networkLog;
         QTextStream m_rawDataStream;
         bool m_simPaused = false;
+        bool m_privateNetwork = false;
         double m_altitudeDelta = 0.0;
 
         QNetworkAccessManager *nam = nullptr;

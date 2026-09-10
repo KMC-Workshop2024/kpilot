@@ -66,6 +66,8 @@ namespace xpilot
         QString Name;
         QString HomeAirport;
         QString ServerName;
+        QString FsdServerAddress;
+        int FsdServerPort = 6809;
         QVector<NetworkServerInfo> CachedServers;
         ConnectInfo RecentConnection;
         ClientWindowConfig WindowConfig;
@@ -126,6 +128,8 @@ namespace xpilot
         Q_PROPERTY(QString Name READ getName WRITE setName NOTIFY nameChanged)
         Q_PROPERTY(QString HomeAirport READ getHomeAirport WRITE setHomeAirport NOTIFY homeAirportChanged)
         Q_PROPERTY(QString ServerName READ getServerName WRITE setServerName NOTIFY serverNameChanged)
+        Q_PROPERTY(QString FsdServerAddress READ getFsdServerAddress WRITE setFsdServerAddress NOTIFY fsdServerAddressChanged)
+        Q_PROPERTY(int FsdServerPort READ getFsdServerPort WRITE setFsdServerPort NOTIFY fsdServerPortChanged)
         Q_PROPERTY(QString SpeakerDevice READ getSpeakerDevice WRITE setSpeakerDevice NOTIFY speakerDeviceChanged)
         Q_PROPERTY(QString HeadsetDevice READ getHeadsetDevice WRITE setHeadsetDevice NOTIFY headsetDeviceChanged)
         Q_PROPERTY(QString InputDevice READ getInputDevice WRITE setInputDevice NOTIFY inputDeviceChanged)
@@ -163,6 +167,8 @@ namespace xpilot
         void setName(const QString &value) { tempName = value; }
         void setHomeAirport(const QString &value) { tempHomeAirport = value; }
         void setServerName(const QString &value) { tempServerName = value; }
+        void setFsdServerAddress(const QString &value) { tempFsdServerAddress = value; }
+        void setFsdServerPort(int value) { tempFsdServerPort = value; }
         void setRecentConnection(const ConnectInfo &value) { RecentConnection = value; }
         void setWindowConfig(const ClientWindowConfig &value) { WindowConfig = value; }
         void setSpeakerDevice(const QString &value) { tempSpeakerDevice = value; }
@@ -191,6 +197,8 @@ namespace xpilot
         QString getName() const { return Name; }
         QString getHomeAirport() const { return HomeAirport; }
         QString getServerName() const { return ServerName; }
+        QString getFsdServerAddress() const { return FsdServerAddress; }
+        int getFsdServerPort() const { return FsdServerPort; }
         ConnectInfo getRecentConnection() const { return RecentConnection; }
         ClientWindowConfig getWindowConfig() const { return WindowConfig; }
         QString getSpeakerDevice() const { return SpeakerDevice; }
@@ -223,6 +231,8 @@ namespace xpilot
         void nameChanged();
         void homeAirportChanged();
         void serverNameChanged();
+        void fsdServerAddressChanged();
+        void fsdServerPortChanged();
         void speakerDeviceChanged();
         void headsetDeviceChanged();
         void notificationAudioDeviceChanged();
@@ -255,6 +265,8 @@ namespace xpilot
         QString tempName;
         QString tempHomeAirport;
         QString tempServerName;
+        QString tempFsdServerAddress;
+        int tempFsdServerPort = 6809;
         QString tempSpeakerDevice;
         QString tempHeadsetDevice;
         QString tempInputDevice;

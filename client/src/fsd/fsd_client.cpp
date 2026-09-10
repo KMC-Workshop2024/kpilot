@@ -52,7 +52,7 @@ namespace xpilot
             return;
         }
 
-        if(BuildConfig::TowerviewClientId() == 0 || BuildConfig::VatsimClientId() == 0 || BuildConfig::VatsimClientKey().isEmpty()) {
+        if(challengeServer && (BuildConfig::TowerviewClientId() == 0 || BuildConfig::VatsimClientId() == 0 || BuildConfig::VatsimClientKey().isEmpty())) {
             emit RaiseNetworkError("Invalid pilot client build. Please download a new copy from the xPilot website.");
             return;
         }

@@ -10,6 +10,8 @@ Item {
     signal applyChanges()
 
     Component.onCompleted: {
+        fsdServerAddress.fieldValue = AppConfig.FsdServerAddress
+        fsdServerPort.fieldValue = AppConfig.FsdServerPort.toString()
         vatsimId.fieldValue = AppConfig.VatsimId
         vatsimPassword.fieldValue = AppConfig.VatsimPasswordDecrypted
         realName.fieldValue = AppConfig.Name
@@ -20,6 +22,25 @@ Item {
     ColumnLayout {
         spacing: 10
         width: 240
+
+        CustomTextField {
+            id: fsdServerAddress
+            fieldLabel: "Server Address:"
+            onValueChanged: function(value) {
+                AppConfig.FsdServerAddress = value
+                applyChanges()
+            }
+        }
+
+        CustomTextField {
+            id: fsdServerPort
+            fieldLabel: "Server Port:"
+            onValueChanged: function(value) {
+                AppConfig.FsdServerPort = Number(value)
+                applyChanges()
+            }
+            validator: IntValidator { bottom: 1; top: 65535 }
+        }
 
         CustomTextField {
             id: vatsimId
