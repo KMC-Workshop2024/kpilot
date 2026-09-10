@@ -12,6 +12,9 @@ enable_testing()
 qt_add_executable(test_server_endpoint
     test_server_endpoint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/network/server_endpoint.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/fsd/pdu/pdu_add_pilot.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/fsd/pdu/pdu_base.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/fsd/serializer.cpp
 )
 target_include_directories(test_server_endpoint PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 target_link_libraries(test_server_endpoint PRIVATE Qt6::Core Qt6::Test Qt6::Network)

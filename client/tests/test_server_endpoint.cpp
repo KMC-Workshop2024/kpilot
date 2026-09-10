@@ -1,6 +1,7 @@
 #include <QtTest>
 
 #include "network/server_endpoint.h"
+#include "fsd/pdu/pdu_add_pilot.h"
 
 using namespace xpilot;
 
@@ -37,6 +38,17 @@ private slots:
     {
         QCOMPARE(ServerEndpoint::normalizeAddress("  fsd.example.com  "), QString("fsd.example.com"));
         QCOMPARE(ServerEndpoint::normalizeAddress("[2001:db8::1]"), QString("2001:db8::1"));
+    }
+
+    void preservesLeadingZeroCidAndFastProtocolRevision()
+    {
+        const PDUAddPilot login("KMA001", "0921", "secret", NetworkRating::OBS,
+                                ProtocolRevision::Vatsim2022, SimulatorType::XPlane,
+                                "Test Pilot");
+        const QStringList fields = login.toTokens();
+
+        QCOMPARE(fields.at(2), QString("0921"));
+        QCOMPARE(fields.at(5), QString("101"));
     }
 };
 
