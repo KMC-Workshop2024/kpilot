@@ -142,10 +142,12 @@ namespace xpilot
                     if(pduTypeId == "$DI")
                     {
                         auto pdu = PDUServerIdentification::fromTokens(fields);
-                        m_clientAuthSessionKey = GenerateAuthResponse(pdu.InitialChallengeKey.toStdString(),
-                                                                      m_clientProperties.ClientID,
-                                                                      m_clientProperties.PrivateKey.toStdString());
-                        m_clientAuthChallengeKey = m_clientAuthSessionKey;
+                        if(m_challengeServer) {
+                            m_clientAuthSessionKey = GenerateAuthResponse(pdu.InitialChallengeKey.toStdString(),
+                                                                          m_clientProperties.ClientID,
+                                                                          m_clientProperties.PrivateKey.toStdString());
+                            m_clientAuthChallengeKey = m_clientAuthSessionKey;
+                        }
                         emit RaiseServerIdentificationReceived(pdu);
                     }
                     else if(pduTypeId == "$ID")
@@ -211,6 +213,9 @@ namespace xpilot
                     }
                     else if(pduTypeId == "$ZC")
                     {
+                        if(!m_challengeServer) {
+                            continue;
+                        }
                         auto pdu = PDUAuthChallenge::fromTokens(fields);
                         std::string authResponse = GenerateAuthResponse(pdu.ChallengeKey.toStdString(),
                                                                         m_clientProperties.ClientID,

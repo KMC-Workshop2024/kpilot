@@ -25,6 +25,7 @@
 #include <QRandomGenerator>
 
 #include "networkmanager.h"
+#include "network/network_log_sanitizer.h"
 #include "network/server_endpoint.h"
 
 namespace xpilot
@@ -1022,20 +1023,14 @@ namespace xpilot
 
     void NetworkManager::OnRawDataSent(QString data)
     {
-        if(!AppConfig::getInstance()->VatsimPasswordDecrypted.isEmpty())
-        {
-            data = data.replace(AppConfig::getInstance()->VatsimPasswordDecrypted, "******");
-        }
-        if(data.startsWith("#AA", Qt::CaseInsensitive) || data.startsWith("#AP", Qt::CaseInsensitive))
-        {
-            data = data.replace(m_jwtToken, "******");
-        }
+        data = NetworkLogSanitizer::sanitize(data);
         m_rawDataStream << QString("[%1] >>> %2").arg(QDateTime::currentDateTimeUtc().toString("HH:mm:ss.zzz"), data);
         m_rawDataStream.flush();
     }
 
     void NetworkManager::OnRawDataReceived(QString data)
     {
+        data = NetworkLogSanitizer::sanitize(data);
         m_rawDataStream << QString("[%1] <<< %2").arg(QDateTime::currentDateTimeUtc().toString("HH:mm:ss.zzz"), data);
         m_rawDataStream.flush();
     }

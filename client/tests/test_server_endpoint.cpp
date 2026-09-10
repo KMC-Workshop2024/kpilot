@@ -1,6 +1,7 @@
 #include <QtTest>
 
 #include "network/server_endpoint.h"
+#include "network/network_log_sanitizer.h"
 #include "fsd/pdu/pdu_add_pilot.h"
 
 using namespace xpilot;
@@ -49,6 +50,18 @@ private slots:
 
         QCOMPARE(fields.at(2), QString("0921"));
         QCOMPARE(fields.at(5), QString("101"));
+    }
+
+    void redactsPilotAndAtcLoginPasswords()
+    {
+        QCOMPARE(NetworkLogSanitizer::sanitize(
+                     "#APKMA001:SERVER:0921:secret:1:101:11:Test Pilot\r\n"),
+                 QString("#APKMA001:SERVER:0921:<redacted>:1:101:11:Test Pilot\r\n"));
+        QCOMPARE(NetworkLogSanitizer::sanitize(
+                     "#AAKMA_TWR:SERVER:Real Name:0921:secret:1:4:40.0:145.0:0\r\n"),
+                 QString("#AAKMA_TWR:SERVER:Real Name:0921:<redacted>:1:4:40.0:145.0:0\r\n"));
+        QCOMPARE(NetworkLogSanitizer::sanitize("^KMA001:1:2:3\r\n"),
+                 QString("^KMA001:1:2:3\r\n"));
     }
 };
 

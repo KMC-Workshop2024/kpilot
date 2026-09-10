@@ -12,6 +12,7 @@ enable_testing()
 qt_add_executable(test_server_endpoint
     test_server_endpoint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/network/server_endpoint.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/network/network_log_sanitizer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/fsd/pdu/pdu_add_pilot.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/fsd/pdu/pdu_base.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/fsd/serializer.cpp
@@ -20,3 +21,20 @@ target_include_directories(test_server_endpoint PRIVATE ${CMAKE_CURRENT_SOURCE_D
 target_link_libraries(test_server_endpoint PRIVATE Qt6::Core Qt6::Test Qt6::Network)
 
 add_test(NAME server_endpoint COMMAND test_server_endpoint)
+
+file(GLOB FSD_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/fsd/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/fsd/pdu/*.cpp
+)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/vatsim-auth
+                 ${CMAKE_CURRENT_BINARY_DIR}/vatsim-auth)
+
+qt_add_executable(test_fsd_private
+    test_fsd_private.cpp
+    ${FSD_SOURCES}
+)
+target_include_directories(test_fsd_private PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_link_libraries(test_fsd_private PRIVATE Qt6::Core Qt6::Test Qt6::Network vatsim-auth)
+
+add_test(NAME fsd_private COMMAND test_fsd_private)
