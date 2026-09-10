@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     env:
       BUILD_TYPE: Release
 
@@ -35,6 +35,7 @@ jobs:
       - name: Run client protocol and MSFS ABI tests
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
           cmake -S client/tests -B build/kpilot-tests -G "Visual Studio 17 2022" -A x64
           cmake --build build/kpilot-tests --config Release --parallel
           ctest --test-dir build/kpilot-tests -C Release --output-on-failure
@@ -42,12 +43,14 @@ jobs:
       - name: Build X-Plane plugin
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
           cmake -S plugin -B build/kpilot-plugin -G "Visual Studio 17 2022" -A x64
           cmake --build build/kpilot-plugin --config Release --parallel
 
       - name: Build desktop client with private-network identity
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
           cmake -S client -B build/kpilot-client -G "Visual Studio 17 2022" -A x64 `
             -DVATSIM_CLIENT_ID=0 `
             -DVATSIM_CLIENT_KEY= `
