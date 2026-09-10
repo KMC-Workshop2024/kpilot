@@ -2,8 +2,10 @@
 
 #include "simulator/msfs2024/own_aircraft_data.h"
 #include "simulator/msfs2024/msfs2024_backend.h"
+#include "simulator/msfs2024/simconnect_symbols.h"
 
 #include <cstddef>
+#include <algorithm>
 
 using namespace xpilot::msfs2024;
 
@@ -64,6 +66,19 @@ private slots:
         QVERIFY(backend.start());
         QVERIFY(api.openCalled);
         QCOMPARE(api.registered.size(), std::size_t(49));
+    }
+
+    void requiredSimConnectSymbolsRejectIncompleteDll()
+    {
+        const auto symbols = requiredSimConnectSymbols();
+        QVERIFY(symbols.size() >= std::size_t(8));
+        QVERIFY(std::find(symbols.begin(), symbols.end(), "SimConnect_Open") != symbols.end());
+        QVERIFY(std::find(symbols.begin(), symbols.end(), "SimConnect_AICreateNonATCAircraft") != symbols.end());
+
+        QVERIFY(allRequiredSymbolsResolved([&](const char*) { return reinterpret_cast<void*>(1); }));
+        QVERIFY(!allRequiredSymbolsResolved([&](const char* name) {
+            return std::string(name) == "SimConnect_Open" ? nullptr : reinterpret_cast<void*>(1);
+        }));
     }
 };
 

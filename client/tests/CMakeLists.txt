@@ -43,6 +43,7 @@ qt_add_executable(test_msfs2024_data
     test_msfs2024_data.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/simulator/msfs2024/own_aircraft_data.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/simulator/msfs2024/msfs2024_backend.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/simulator/msfs2024/simconnect_symbols.cpp
 )
 target_include_directories(test_msfs2024_data PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 target_link_libraries(test_msfs2024_data PRIVATE Qt6::Core Qt6::Test)
