@@ -1,0 +1,66 @@
+name: Build K-Pilot for Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/kpilot-client]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      BUILD_TYPE: Release
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Initialize public source dependencies
+        shell: bash
+        run: |
+          git submodule update --init client/afv-native
+          git -C client/afv-native config submodule.extern/cpp-jwt.url https://github.com/arun11299/cpp-jwt.git
+          git -C client/afv-native config submodule.extern/opus.url https://github.com/xpilot-project/opus.git
+          git -C client/afv-native submodule update --init extern/cpp-jwt extern/opus
+          rm -rf client/afv-native/extern/speexdsp
+          git clone --depth 1 https://github.com/xiph/speexdsp.git client/afv-native/extern/speexdsp
+
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.5.2'
+          arch: win64_msvc2019_64
+          cache: true
+
+      - name: Run client protocol and MSFS ABI tests
+        shell: pwsh
+        run: |
+          cmake -S client/tests -B build/kpilot-tests -G "Visual Studio 17 2022" -A x64
+          cmake --build build/kpilot-tests --config Release --parallel
+          ctest --test-dir build/kpilot-tests -C Release --output-on-failure
+
+      - name: Build X-Plane plugin
+        shell: pwsh
+        run: |
+          cmake -S plugin -B build/kpilot-plugin -G "Visual Studio 17 2022" -A x64
+          cmake --build build/kpilot-plugin --config Release --parallel
+
+      - name: Build desktop client with private-network identity
+        shell: pwsh
+        run: |
+          cmake -S client -B build/kpilot-client -G "Visual Studio 17 2022" -A x64 `
+            -DVATSIM_CLIENT_ID=0 `
+            -DVATSIM_CLIENT_KEY= `
+            -DVATSIM_TOWERVIEW_CLIENT_ID=0 `
+            -DCONFIG_ENCRYPTION_KEY=7358102469 `
+            -DCMAKE_LIBRARY_PATH="${{ github.workspace }}/dependencies/platform/windows/wmf"
+          cmake --build build/kpilot-client --config Release --parallel
+
+      - name: Upload unsigned build evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: K-Pilot-Windows-unsigned
+          path: |
+            build/kpilot-client/Release/
+            build/kpilot-plugin/win_x64/
+          if-no-files-found: error
