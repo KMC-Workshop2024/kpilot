@@ -118,6 +118,17 @@ Gate: no production switch without explicit user approval after reviewing test e
 
 ## Checkpoint Record
 
+Phase: 0 - Baseline
+Commit: recorded in `docs/kpilot/PHASE-0-RESULT.md`
+Artifacts: provenance, license, build, test, and production-safety records
+Commands executed: see `docs/kpilot/TEST-BASELINE.md`
+Test results: X-Plane plugin built; desktop compilation completed but macOS Qt
+link failed; no upstream CTest tests exist
+Known limitations: unavailable pinned SpeexDSP fork, no MSFS hardware, no
+Windows build evidence yet
+Decision: NO-GO for packaging/release; continue local unit-tested source work
+by explicit user direction
+
 After each phase, append:
 
 ```text

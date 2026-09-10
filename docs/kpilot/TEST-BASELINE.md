@@ -48,6 +48,9 @@ Both commands exited with status 0 and reported `No tests were found`.
 - Upstream provides no CTest tests for either target at this revision.
 - The desktop client requires an explicit Qt 6.11 include compatibility fix
   before it can complete a build.
+- The client build unconditionally requests x86_64 and arm64 on macOS, while
+  Homebrew Qt is arm64-only. The development build must be allowed to select
+  arm64 without changing Windows or X-Plane plugin release behavior.
 - `afv-native` pins `xpilot-project/speexdsp` commit
   `de18e74b5e2668531f60dfdd9e9af4a922a8efa4`, but that repository is no longer
   publicly available. The development baseline temporarily uses the official
