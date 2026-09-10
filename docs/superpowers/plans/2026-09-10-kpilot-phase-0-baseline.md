@@ -140,9 +140,9 @@ Paste the output of `scripts/kpilot/check-build-environment.sh` here.
 
 ## Supported Build Targets
 
-- macOS: K-Pilot desktop client and X-Plane plugin.
-- Windows: K-Pilot desktop client, X-Plane plugin, and MSFS 2024 SimConnect backend.
-- MSFS runtime validation requires a Windows machine with MSFS 2024 and is not available on the current Mac.
+- Release target: Windows K-Pilot desktop client, optional X-Plane plugin, and MSFS 2024 SimConnect backend.
+- macOS is a development host only and is not a K-Pilot release target.
+- MSFS runtime validation requires a Windows machine with MSFS 2024 and is not available on the current development host.
 
 ## Dependency Policy
 

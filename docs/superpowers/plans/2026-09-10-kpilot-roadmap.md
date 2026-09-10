@@ -56,9 +56,9 @@ Gate: Windows build passes with the official MSFS 2024 SDK; ABI/data-definition 
 
 ### Phase 5: Package And Local Qualification
 
-Deliverable: K-Pilot macOS app, Windows installer, unchanged xPilot-style UI, X-Plane plugin, MSFS backend, GPL notices/source archive, reproducible build instructions, and rollback-compatible configuration migration.
+Deliverable: K-Pilot Windows installer, unchanged xPilot-style UI, optional X-Plane plugin, MSFS backend, GPL notices/source archive, reproducible build instructions, and rollback-compatible configuration migration. macOS is not a release target.
 
-Gate: fresh-install, upgrade, reconnect, malformed-packet, wrong-password, long-disconnect, and 8-hour soak suites pass. macOS/X-Plane receives live testing; MSFS remains explicitly hardware-unverified until an owner tests it.
+Gate: fresh-install, upgrade, reconnect, malformed-packet, wrong-password, long-disconnect, and 8-hour soak suites pass. X-Plane receives live testing; MSFS remains explicitly hardware-unverified until an owner tests it.
 
 ### Phase 6: Shadow Server Only
 
@@ -79,7 +79,6 @@ Gate: no production switch without explicit user approval after reviewing test e
 | Settings persistence/validation | Required | Required | N/A | N/A |
 | Private FSD auth/protocol 101 | Required | Required | Required | Deferred |
 | Velocity parsing/prediction | Required | X-Plane required | Required | Deferred |
-| macOS packaging | Required | Required | Optional | N/A |
 | Windows packaging | Required in Windows CI/VM | Required | Required | N/A |
 | MSFS SimConnect ABI | Required | Hardware unavailable | Required by external tester | Deferred |
 | Server stability/rollback | Required | N/A | Required | Explicit approval only |
@@ -90,18 +89,14 @@ Gate: no production switch without explicit user approval after reviewing test e
 
 - [ ] Deliver one signed or clearly identified unsigned `K-Pilot-Setup.exe`; do not require users to install a compiler, Qt, the MSFS SDK, or copy DLLs manually.
 - [ ] Install the K-Pilot desktop executable and its runtime dependencies under the user-selected application directory, with per-user installation as the default.
-- [ ] Preserve xPilot's installer flow for detecting X-Plane installations and selecting one or more X-Plane roots. Copy the renamed K-Pilot `.xpl` and its resources only into each selected `X-Plane/Resources/plugins/K-Pilot` directory.
+- [ ] Preserve xPilot's installer flow for detecting X-Plane installations and selecting one or more X-Plane roots, and add a clearly visible `Skip X-Plane` action. Copy the renamed K-Pilot `.xpl` and its resources only into each selected `X-Plane/Resources/plugins/K-Pilot` directory. Skipping X-Plane must still produce a complete MSFS-capable K-Pilot installation.
 - [ ] Treat MSFS 2024 as an out-of-process SimConnect target. Do not install a package into the MSFS Community directory and do not alter `UserCfg.opt`, `SimConnect.xml`, or simulator packages for a normal same-PC installation.
 - [ ] At install time, report whether MSFS 2024 appears to be installed, but allow installation when it is absent. At runtime, identify MSFS 2024 from the `SIMCONNECT_RECV_OPEN` application/version response rather than trusting an installation path.
 - [ ] Connect locally with `SimConnect_Open` and `SIMCONNECT_OPEN_CONFIGINDEX_LOCAL`, allowing MSFS 2024 to select its default local Named Pipe. A custom `SimConnect.cfg` is supported only as an advanced, explicit remote-simulator option.
 - [ ] Display simulator state as `Not installed`, `Installed / not running`, `Connecting`, `Connected`, or `Version mismatch`; never claim MSFS support merely because a folder was detected.
+- [ ] Installing the X-Plane plugin must not disable MSFS support. At runtime, probe both backends with negligible idle work, connect only to the simulator that is running, and never inject the same network aircraft into both simulators simultaneously.
+- [ ] If both X-Plane and MSFS 2024 are running, show a one-time simulator-choice dialog, use exactly one active backend, and remember the choice. If only one simulator is running, select it automatically without prompting.
 - [ ] Register a normal Windows uninstaller that removes K-Pilot-owned files and shortcuts only. It must not remove aircraft models, simulator packages, xPilot, swift, or user configuration unless the user explicitly selects K-Pilot settings removal.
-
-### macOS Installer
-
-- [ ] Deliver a normal K-Pilot `.dmg` containing `K-Pilot.app` and preserve the xPilot plugin installation workflow for one or more X-Plane roots.
-- [ ] Do not present MSFS 2024 options on macOS because MSFS 2024 and native SimConnect are Windows targets.
-- [ ] Keep K-Pilot configuration under its own application identifier so installing it cannot overwrite xPilot settings.
 
 ### Upgrade And Coexistence
 
@@ -113,6 +108,8 @@ Gate: no production switch without explicit user approval after reviewing test e
 ### Installation Acceptance Tests
 
 - [ ] Test fresh install, upgrade, repair, uninstall, cancellation, non-ASCII Windows username, application path containing spaces, absent simulator, X-Plane-only, MSFS-only, and both simulators installed.
+- [ ] Verify both X-Plane installer branches: selecting a valid directory installs the K-Pilot plugin; choosing `Skip X-Plane` installs no X-Plane files and leaves MSFS support operational.
+- [ ] Verify both-sim behavior: idle probing remains bounded, only one backend owns aircraft injection, the conflict prompt appears once, and the remembered choice can be changed later.
 - [ ] Verify that launching K-Pilot before MSFS shows `Installed / not running`, launching MSFS later changes to `Connected`, and closing/restarting MSFS reconnects without restarting K-Pilot.
 - [ ] Verify that deleting or crashing K-Pilot cannot crash MSFS 2024; this follows the Microsoft-recommended out-of-process architecture and must be confirmed by the fake SimConnect harness before hardware validation.
 - [ ] Verify that no normal MSFS installation step writes to the Community directory or edits simulator configuration.
