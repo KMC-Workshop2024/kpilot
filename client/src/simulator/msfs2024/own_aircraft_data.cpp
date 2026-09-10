@@ -1,0 +1,60 @@
+#include "own_aircraft_data.h"
+
+namespace xpilot::msfs2024
+{
+    const std::array<SimVariableDefinition, 49>& ownAircraftDefinitions()
+    {
+        static const std::array<SimVariableDefinition, 49> definitions{{
+            {"PLANE LATITUDE", "Degrees"},
+            {"PLANE LONGITUDE", "Degrees"},
+            {"PLANE ALTITUDE", "Feet"},
+            {"PLANE ALT ABOVE GROUND", "Feet"},
+            {"PRESSURE ALTITUDE", "Meters"},
+            {"STATIC CG TO GROUND", "Feet"},
+            {"PLANE HEADING DEGREES TRUE", "Degrees"},
+            {"PLANE PITCH DEGREES", "Degrees"},
+            {"PLANE BANK DEGREES", "Degrees"},
+            {"GROUND VELOCITY", "Knots"},
+            {"GROUND ALTITUDE", "Feet"},
+            {"SIM ON GROUND", "Bool"},
+            {"LIGHT STROBE", "Bool"},
+            {"LIGHT LANDING", "Bool"},
+            {"LIGHT TAXI", "Bool"},
+            {"LIGHT BEACON", "Bool"},
+            {"LIGHT NAV", "Bool"},
+            {"LIGHT LOGO", "Bool"},
+            {"TRANSPONDER CODE:1", ""},
+            {"COM ACTIVE FREQUENCY:1", "MHz"},
+            {"COM ACTIVE FREQUENCY:2", "MHz"},
+            {"COM STANDBY FREQUENCY:1", "MHz"},
+            {"COM STANDBY FREQUENCY:2", "MHz"},
+            {"COM TRANSMIT:1", "Bool"},
+            {"COM TRANSMIT:2", "Bool"},
+            {"COM RECEIVE ALL", "Bool"},
+            {"COM TEST:1", "Bool"},
+            {"COM TEST:2", "Bool"},
+            {"COM STATUS:1", "Enum"},
+            {"COM STATUS:2", "Enum"},
+            {"FLAPS HANDLE PERCENT", "Percent Over 100"},
+            {"SPOILERS HANDLE POSITION", "Percent Over 100"},
+            {"GEAR HANDLE POSITION", "Bool"},
+            {"NUMBER OF ENGINES", "Number"},
+            {"GENERAL ENG COMBUSTION:1", "Bool"},
+            {"GENERAL ENG COMBUSTION:2", "Bool"},
+            {"GENERAL ENG COMBUSTION:3", "Bool"},
+            {"GENERAL ENG COMBUSTION:4", "Bool"},
+            {"GENERAL ENG PCT MAX RPM:1", "percent"},
+            {"GENERAL ENG PCT MAX RPM:2", "percent"},
+            {"GENERAL ENG PCT MAX RPM:3", "percent"},
+            {"GENERAL ENG PCT MAX RPM:4", "percent"},
+            {"VELOCITY WORLD X", "Feet per second"},
+            {"VELOCITY WORLD Y", "Feet per second"},
+            {"VELOCITY WORLD Z", "Feet per second"},
+            {"ROTATION VELOCITY BODY X", "Radians per second"},
+            {"ROTATION VELOCITY BODY Y", "Radians per second"},
+            {"ROTATION VELOCITY BODY Z", "Radians per second"},
+            {"INDICATED ALTITUDE CALIBRATED", "Feet"},
+        }};
+        return definitions;
+    }
+}

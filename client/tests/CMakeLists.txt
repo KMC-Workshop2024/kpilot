@@ -38,3 +38,13 @@ target_include_directories(test_fsd_private PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/
 target_link_libraries(test_fsd_private PRIVATE Qt6::Core Qt6::Test Qt6::Network vatsim-auth)
 
 add_test(NAME fsd_private COMMAND test_fsd_private)
+
+qt_add_executable(test_msfs2024_data
+    test_msfs2024_data.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/simulator/msfs2024/own_aircraft_data.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/simulator/msfs2024/msfs2024_backend.cpp
+)
+target_include_directories(test_msfs2024_data PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_link_libraries(test_msfs2024_data PRIVATE Qt6::Core Qt6::Test)
+
+add_test(NAME msfs2024_data COMMAND test_msfs2024_data)
