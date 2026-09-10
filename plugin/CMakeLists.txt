@@ -75,6 +75,7 @@ set(INCLUDES
   include/terrain_probe.h
   include/text_message_console.h
   include/utilities.h
+  include/velocity_predictor.h
   include/xpilot.h
   include/xpilot_api.h
   include/xplane_command.h
@@ -96,6 +97,7 @@ set(SRC
   src/stopwatch.cpp
   src/terrain_probe.cpp
   src/text_message_console.cpp
+  src/velocity_predictor.cpp
   src/xpilot.cpp
   3rdparty/imgui/imgui.cpp
   3rdparty/imgui/imgui_draw.cpp

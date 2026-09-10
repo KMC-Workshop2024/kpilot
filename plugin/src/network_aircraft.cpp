@@ -21,6 +21,7 @@
 #include "network_aircraft.h"
 #include "abacus.hpp"
 #include "utilities.h"
+#include "velocity_predictor.h"
 
 #include <regex>
 
@@ -64,14 +65,11 @@ namespace xpilot
 		Vector3 rotationVector,
 		double interval)
 	{
-		double lat_change = MetersToDegrees(velocityVector.Z * interval);
-		double new_lat = NormalizeDegrees(PredictedVisualState.Lat + lat_change, -90.0, 90.0);
-
-		double lon_change = MetersToDegrees(velocityVector.X * interval / LongitudeScalingFactor(PredictedVisualState.Lat));
-		double new_lon = NormalizeDegrees(PredictedVisualState.Lon + lon_change, -180.0, 180.0);
-
-		double alt_change = velocityVector.Y * interval * 3.28084;
-		double new_alt = PredictedVisualState.AltitudeTrue + alt_change;
+		const auto translated = VelocityPredictor::extrapolate(
+			{PredictedVisualState.Lat, PredictedVisualState.Lon, PredictedVisualState.AltitudeTrue,
+			 PredictedVisualState.Pitch, PredictedVisualState.Heading, PredictedVisualState.Bank},
+			{velocityVector.X, velocityVector.Y, velocityVector.Z},
+			{rotationVector.X, rotationVector.Y, rotationVector.Z}, interval);
 
 		double pitch;
 		double bank;
@@ -113,9 +111,9 @@ namespace xpilot
 		}
 
 		AircraftVisualState predictedVisualState{};
-		predictedVisualState.Lat = new_lat;
-		predictedVisualState.Lon = new_lon;
-		predictedVisualState.AltitudeTrue = new_alt;
+		predictedVisualState.Lat = translated.latitude;
+		predictedVisualState.Lon = translated.longitude;
+		predictedVisualState.AltitudeTrue = translated.altitudeFeet;
 		predictedVisualState.Pitch = pitch;
 		predictedVisualState.Bank = bank;
 		predictedVisualState.Heading = heading;
@@ -185,7 +183,7 @@ namespace xpilot
 	void NetworkAircraft::UpdateVelocityVectors()
 	{
 		auto currentTimestamp = PrecisionTimestamp();
-		if (currentTimestamp - LastVelocityUpdate > 500)
+		if (VelocityPredictor::velocityIsStale(currentTimestamp - LastVelocityUpdate, 500))
 		{
 			ClearRotationalVelocities();
 		}
@@ -324,28 +322,13 @@ namespace xpilot
 
 	void NetworkAircraft::UpdateErrorVectors(double currentTimestamp)
 	{
-		double latDelta = DegreesToMeters(CalculateNormalizedDelta(
-			PredictedVisualState.Lat,
-			VisualState.Lat,
-			-90.0,
-			90.0
-		));
+		const auto correction = VelocityPredictor::positionCorrection(
+			{PredictedVisualState.Lat, PredictedVisualState.Lon, PredictedVisualState.AltitudeTrue,
+			 PredictedVisualState.Pitch, PredictedVisualState.Heading, PredictedVisualState.Bank},
+			{VisualState.Lat, VisualState.Lon, VisualState.AltitudeTrue,
+			 VisualState.Pitch, VisualState.Heading, VisualState.Bank}, 2.0);
 
-		double lonDelta = DegreesToMeters(CalculateNormalizedDelta(
-			PredictedVisualState.Lon,
-			VisualState.Lon,
-			-180.0,
-			180.0
-		));
-		lonDelta *= LongitudeScalingFactor(VisualState.Lat);
-
-		double altDelta = (VisualState.AltitudeTrue - PredictedVisualState.AltitudeTrue) * 0.3048;
-
-		PositionalErrorVelocities = Vector3(
-			lonDelta / 2.0,
-			altDelta / 2.0,
-			latDelta / 2.0
-		);
+		PositionalErrorVelocities = Vector3(correction.x, correction.y, correction.z);
 
 		if (PredictedVisualState.Pitch == VisualState.Pitch &&
 			PredictedVisualState.Heading == VisualState.Heading &&
@@ -389,7 +372,7 @@ namespace xpilot
 		}
 		else
 		{
-			if (currentTimestamp - LastVelocityUpdate > 500)
+			if (VelocityPredictor::velocityIsStale(currentTimestamp - LastVelocityUpdate, 500))
 			{
 				ClearRotationalVelocities();
 			}
