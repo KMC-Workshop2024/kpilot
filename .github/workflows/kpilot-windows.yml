@@ -30,6 +30,7 @@ jobs:
         with:
           version: '6.5.2'
           arch: win64_msvc2019_64
+          modules: 'qtmultimedia qtshadertools'
           cache: true
 
       - name: Run client protocol and MSFS ABI tests
