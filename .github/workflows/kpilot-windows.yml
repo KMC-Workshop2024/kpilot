@@ -84,25 +84,35 @@ jobs:
             installer/kpilot.iss
 
       - name: Smoke-test install, launch, and uninstall
+        timeout-minutes: 8
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
           $installer = "$env:GITHUB_WORKSPACE\build\kpilot-installer\K-Pilot-Setup.exe"
           $installDir = "$env:RUNNER_TEMP\K-Pilot-Smoke"
+          $installLog = "$env:RUNNER_TEMP\kpilot-install.log"
+          Write-Host "Installing $installer to $installDir"
           $install = Start-Process $installer -ArgumentList @(
             '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART',
-            "/DIR=$installDir", '/COMPONENTS=client,msfs2024'
+            "/DIR=$installDir", '/COMPONENTS=client,msfs2024', "/LOG=$installLog"
           ) -Wait -PassThru
           if ($install.ExitCode -ne 0) { throw "Installer exited with $($install.ExitCode)" }
+          Write-Host "Installer completed"
           @(
             "$installDir\K-Pilot.exe",
             "$installDir\Qt6Core.dll",
             "$installDir\platforms\qwindows.dll"
           ) | ForEach-Object { if (-not (Test-Path $_)) { throw "Missing installed file: $_" } }
 
-          $version = Start-Process "$installDir\K-Pilot.exe" -ArgumentList '--version' -Wait -PassThru
+          Write-Host "Running installed version check"
+          $version = Start-Process "$installDir\K-Pilot.exe" -ArgumentList '--version' -PassThru
+          if (-not $version.WaitForExit(30000)) {
+            $version.Kill($true)
+            throw "Installed client did not exit after --version"
+          }
           if ($version.ExitCode -ne 0) { throw "Installed client exited with $($version.ExitCode)" }
 
+          Write-Host "Uninstalling smoke-test installation"
           $uninstall = Start-Process "$installDir\unins000.exe" -ArgumentList @(
             '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART'
           ) -Wait -PassThru
