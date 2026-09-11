@@ -93,18 +93,21 @@ jobs:
           $ErrorActionPreference = "Stop"
           $installer = "$env:GITHUB_WORKSPACE\build\kpilot-installer\K-Pilot-Setup.exe"
           $installDir = "$env:RUNNER_TEMP\K-Pilot-Smoke"
+          $xplaneDir = "$env:RUNNER_TEMP\X-Plane-Smoke"
           $installLog = "$env:RUNNER_TEMP\kpilot-install.log"
+          New-Item -ItemType Directory -Force "$xplaneDir\Resources" | Out-Null
           Write-Host "Installing $installer to $installDir"
           $install = Start-Process $installer -ArgumentList @(
             '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART',
-            "/DIR=$installDir", '/COMPONENTS=client', "/LOG=$installLog"
+            "/DIR=$installDir", '/COMPONENTS=client,xplane', "/XPlaneDir=$xplaneDir", "/LOG=$installLog"
           ) -Wait -PassThru
           if ($install.ExitCode -ne 0) { throw "Installer exited with $($install.ExitCode)" }
           Write-Host "Installer completed"
           @(
             "$installDir\K-Pilot.exe",
             "$installDir\Qt6Core.dll",
-            "$installDir\platforms\qwindows.dll"
+            "$installDir\platforms\qwindows.dll",
+            "$xplaneDir\Resources\plugins\xPilot\win_x64\K-Pilot.xpl"
           ) | ForEach-Object { if (-not (Test-Path $_)) { throw "Missing installed file: $_" } }
 
           Write-Host "Running installed package self-test"

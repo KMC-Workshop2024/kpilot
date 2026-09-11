@@ -54,3 +54,8 @@ add_test(
     NAME private_branding
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/test_private_branding.cmake
 )
+
+add_test(
+    NAME installer_plugin_layout
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/test_installer_plugin_layout.cmake
+)

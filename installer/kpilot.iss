@@ -32,8 +32,11 @@ Name: "xplane"; Description: "X-Plane 11/12 plugin"; Types: full
 
 [Files]
 Source: "{#KPilotClientDir}\*"; DestDir: "{app}"; Components: client; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#XPlanePluginDir}\*"; DestDir: "{code:GetXPlanePluginDir}"; Components: xplane; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#XPlanePluginDir}\*"; DestDir: "{code:GetXPlanePluginDir}\win_x64"; Components: xplane; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\client\Resources\Sounds\*"; DestDir: "{localappdata}\org.kpilot.client\Sounds"; Components: client; Flags: ignoreversion recursesubdirs createallsubdirs
+
+[InstallDelete]
+Type: files; Name: "{code:GetXPlanePluginDir}\win_x64\xPilot.xpl"; Components: xplane
 
 [Icons]
 Name: "{group}\K-Pilot"; Filename: "{app}\K-Pilot.exe"
@@ -54,6 +57,7 @@ begin
     'Select the X-Plane root directory. Clear the X-Plane component on the previous page to skip plugin installation.',
     False, '');
   XPlanePage.Add('');
+  XPlanePage.Values[0] := ExpandConstant('{param:XPlaneDir|}');
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
@@ -77,5 +81,6 @@ end;
 
 function GetXPlanePluginDir(Param: String): String;
 begin
-  Result := AddBackslash(XPlanePage.Values[0]) + 'Resources\plugins\K-Pilot';
+  { Keep the established data directory so existing CSL and Config.json remain usable. }
+  Result := AddBackslash(XPlanePage.Values[0]) + 'Resources\plugins\xPilot';
 end;
