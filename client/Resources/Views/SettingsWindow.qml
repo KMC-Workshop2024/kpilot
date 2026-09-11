@@ -12,7 +12,7 @@ import "../Views/Settings"
 
 Window {
     id: settingsWindow
-    title: "xPilot Settings"
+    title: "K-Pilot Settings"
     width: 850
     height: 475
     color: "#ffffff"

@@ -7,6 +7,8 @@
         <file>Resources/Fonts/Ubuntu-Regular.ttf</file>
         <file>Resources/Icons/AppIcon.ico</file>
         <file>Resources/Icons/AppIcon.png</file>
+        <file>Resources/Icons/KPilot.ico</file>
+        <file>Resources/Brand/KPilotIcon-256.png</file>
         <file>Resources/Icons/CloseIcon.svg</file>
         <file>Resources/Icons/MaximizeIcon.svg</file>
         <file>Resources/Icons/MinimizeIcon.svg</file>

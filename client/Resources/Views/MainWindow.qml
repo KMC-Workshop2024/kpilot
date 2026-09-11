@@ -19,7 +19,7 @@ import "../Components/VersionCheck"
 
 Window {
     id: mainWindow
-    title: "xPilot"
+    title: "K-Pilot"
     visible: true
     flags: Qt.Window | Qt.FramelessWindowHint
     color: "#272C2E"

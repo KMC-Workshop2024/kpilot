@@ -60,11 +60,60 @@ jobs:
             -DCMAKE_LIBRARY_PATH="${{ github.workspace }}/dependencies/platform/windows/wmf"
           cmake --build build/kpilot-client --config Release --parallel
 
-      - name: Upload unsigned build evidence
+      - name: Deploy Qt runtime
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          & "$env:QT_ROOT_DIR\bin\windeployqt.exe" `
+            --release `
+            --qmldir "$env:GITHUB_WORKSPACE\client\Resources" `
+            --no-translations `
+            "$env:GITHUB_WORKSPACE\build\kpilot-client\Release\K-Pilot.exe"
+
+      - name: Build Windows installer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { throw "Inno Setup compiler not found at $iscc" }
+          New-Item -ItemType Directory -Force build/kpilot-installer | Out-Null
+          & $iscc `
+            "/DKPilotClientDir=$env:GITHUB_WORKSPACE\build\kpilot-client\Release" `
+            "/DXPlanePluginDir=$env:GITHUB_WORKSPACE\build\kpilot-plugin\win_x64" `
+            "/O$env:GITHUB_WORKSPACE\build\kpilot-installer" `
+            installer/kpilot.iss
+
+      - name: Smoke-test install, launch, and uninstall
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $installer = "$env:GITHUB_WORKSPACE\build\kpilot-installer\K-Pilot-Setup.exe"
+          $installDir = "$env:RUNNER_TEMP\K-Pilot-Smoke"
+          $install = Start-Process $installer -ArgumentList @(
+            '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART',
+            "/DIR=$installDir", '/COMPONENTS=client,msfs2024'
+          ) -Wait -PassThru
+          if ($install.ExitCode -ne 0) { throw "Installer exited with $($install.ExitCode)" }
+          @(
+            "$installDir\K-Pilot.exe",
+            "$installDir\Qt6Core.dll",
+            "$installDir\platforms\qwindows.dll"
+          ) | ForEach-Object { if (-not (Test-Path $_)) { throw "Missing installed file: $_" } }
+
+          $version = Start-Process "$installDir\K-Pilot.exe" -ArgumentList '--version' -Wait -PassThru
+          if ($version.ExitCode -ne 0) { throw "Installed client exited with $($version.ExitCode)" }
+
+          $uninstall = Start-Process "$installDir\unins000.exe" -ArgumentList @(
+            '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART'
+          ) -Wait -PassThru
+          if ($uninstall.ExitCode -ne 0) { throw "Uninstaller exited with $($uninstall.ExitCode)" }
+          Start-Sleep -Seconds 2
+          if (Test-Path "$installDir\K-Pilot.exe") { throw "Uninstall left K-Pilot.exe behind" }
+
+      - name: Upload tested Windows installer
         uses: actions/upload-artifact@v4
         with:
-          name: K-Pilot-Windows-unsigned
+          name: K-Pilot-Windows-tested
           path: |
-            build/kpilot-client/Release/
-            build/kpilot-plugin/win_x64/
+            build/kpilot-installer/K-Pilot-Setup.exe
           if-no-files-found: error

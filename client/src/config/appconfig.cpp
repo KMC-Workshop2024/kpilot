@@ -48,7 +48,7 @@ AppConfig *AppConfig::getInstance()
 
 const QString &AppConfig::dataRoot()
 {
-    QString folder("/org.vatsim.xpilot/");
+    QString folder("/org.kpilot.client/");
     static const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + folder;
     return path;
 }
@@ -64,7 +64,7 @@ const QString &AppConfig::xplanePath()
 
 const QString &AppConfig::soundsPath()
 {
-    QString folder("/org.vatsim.xpilot/Sounds/");
+    QString folder("/org.kpilot.client/Sounds/");
     static const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + folder;
     return path;
 }

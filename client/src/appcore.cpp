@@ -69,19 +69,19 @@ static QObject *appConfigSingleton(QQmlEngine *, QJSEngine *)
 
 int xpilot::Main(int argc, char* argv[])
 {
-    QCoreApplication::setApplicationName("xPilot");
+    QCoreApplication::setApplicationName("K-Pilot");
     QCoreApplication::setApplicationVersion(xpilot::BuildConfig::getVersionString());
-    QCoreApplication::setOrganizationName("Justin Shannon");
-    QCoreApplication::setOrganizationDomain("org.vatsim.xpilot");
+    QCoreApplication::setOrganizationName("KMC Workshop");
+    QCoreApplication::setOrganizationDomain("org.kpilot.client");
 
-    RunGuard guard("org.vatsim.xpilot");
+    RunGuard guard("org.kpilot.client");
     if(!guard.tryToRun()) {
         return 0;
     }
 
     QApplication app(argc, argv);
 
-    app.setWindowIcon(QIcon(":/Resources/Icons/AppIcon.ico"));
+    app.setWindowIcon(QIcon(":/Resources/Icons/KPilot.ico"));
 
 #if defined(Q_OS_WIN)
     if(QOperatingSystemVersion::current() < QOperatingSystemVersion::Windows10_1809) {

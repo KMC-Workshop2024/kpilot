@@ -122,6 +122,7 @@ if(APPLE)
 endif()
 
 add_executable(${PROJECT_NAME} ${gui_TYPE} ${xpilot_ICON} ${xpilot_SRC} ${afv_HEADERS} ${afv_SRC} ${qrc_SOURCES} xpilot.rc)
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "K-Pilot")
 
 qt6_import_qml_plugins(${PROJECT_NAME})
 
