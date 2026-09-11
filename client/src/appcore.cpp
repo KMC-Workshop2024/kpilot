@@ -34,6 +34,7 @@
 #include <QScopeGuard>
 #include <QFont>
 #include <QFontDatabase>
+#include <QFile>
 #include <QCommandLineParser>
 #include <QOperatingSystemVersion>
 #include <QMessageBox>
@@ -97,7 +98,14 @@ int xpilot::Main(int argc, char* argv[])
 
     QCommandLineParser parser;
     parser.addVersionOption();
+    const QCommandLineOption selfTestOption("self-test", "Validate packaged runtime resources and exit.");
+    parser.addOption(selfTestOption);
     parser.process(app);
+    if(parser.isSet(selfTestOption)) {
+        const bool resourcesAvailable = QFile::exists(":/Resources/Views/MainWindow.qml") &&
+                                        QFile::exists(":/Resources/Icons/KPilot.ico");
+        return resourcesAvailable ? 0 : 2;
+    }
 
     auto families = QFontDatabase::families();
     if(!families.contains("Open Sans")) {

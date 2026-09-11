@@ -104,13 +104,13 @@ jobs:
             "$installDir\platforms\qwindows.dll"
           ) | ForEach-Object { if (-not (Test-Path $_)) { throw "Missing installed file: $_" } }
 
-          Write-Host "Running installed version check"
-          $version = Start-Process "$installDir\K-Pilot.exe" -ArgumentList '--version' -PassThru
-          if (-not $version.WaitForExit(30000)) {
-            $version.Kill($true)
-            throw "Installed client did not exit after --version"
+          Write-Host "Running installed package self-test"
+          $selfTest = Start-Process "$installDir\K-Pilot.exe" -ArgumentList '--self-test' -PassThru
+          if (-not $selfTest.WaitForExit(30000)) {
+            $selfTest.Kill($true)
+            throw "Installed client did not exit after --self-test"
           }
-          if ($version.ExitCode -ne 0) { throw "Installed client exited with $($version.ExitCode)" }
+          if ($selfTest.ExitCode -ne 0) { throw "Installed client self-test exited with $($selfTest.ExitCode)" }
 
           Write-Host "Uninstalling smoke-test installation"
           $uninstall = Start-Process "$installDir\unins000.exe" -ArgumentList @(

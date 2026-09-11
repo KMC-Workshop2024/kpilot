@@ -9,7 +9,7 @@ Windows CI pipeline has completed these checks:
 2. The X-Plane plugin and desktop client compile on Windows 2022.
 3. Qt runtime and QML plugins are deployed.
 4. The installer completes a silent install.
-5. The installed executable runs its `--version` path successfully.
+5. The installed executable passes its non-interactive `--self-test` resource check.
 6. The uninstaller completes and removes the executable.
 
 MSFS 2024 simulator behavior remains hardware-unverified until it is tested on
