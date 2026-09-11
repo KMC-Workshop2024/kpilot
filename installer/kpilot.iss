@@ -84,16 +84,19 @@ end;
 
 procedure MigrateExistingCslConfig;
 var
-  OldConfig, NewConfig, ConfigText: String;
+  OldConfig, NewConfig: String;
+  ConfigLines: TArrayOfString;
+  I: Integer;
 begin
   OldConfig := AddBackslash(XPlanePage.Values[0]) + 'Resources\plugins\xPilot\Resources\Config.json';
   NewConfig := GetXPlanePluginDir('') + '\Resources\Config.json';
   if FileExists(OldConfig) and not FileExists(NewConfig) and
-     LoadStringFromFile(OldConfig, ConfigText) then
+     LoadStringsFromFile(OldConfig, ConfigLines) then
   begin
     { Preserve CSL paths but give K-Pilot its own TCP endpoint. }
-    StringChangeEx(ConfigText, '53100', '53110', True);
-    SaveStringToFile(NewConfig, ConfigText, False);
+    for I := 0 to GetArrayLength(ConfigLines) - 1 do
+      StringChangeEx(ConfigLines[I], '53100', '53110', True);
+    SaveStringsToFile(NewConfig, ConfigLines, False);
   end;
 end;
 
