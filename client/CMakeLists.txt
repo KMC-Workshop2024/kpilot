@@ -229,6 +229,10 @@ target_link_libraries(${PROJECT_NAME}
     nlohmann_json
 )
 
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Iphlpapi)
+endif()
+
 target_compile_definitions(${PROJECT_NAME}
     PRIVATE
     $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>
