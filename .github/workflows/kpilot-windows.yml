@@ -107,7 +107,8 @@ jobs:
             "$installDir\K-Pilot.exe",
             "$installDir\Qt6Core.dll",
             "$installDir\platforms\qwindows.dll",
-            "$xplaneDir\Resources\plugins\xPilot\win_x64\K-Pilot.xpl"
+            "$xplaneDir\Resources\plugins\K-Pilot\win_x64\K-Pilot.xpl",
+            "$xplaneDir\Resources\plugins\K-Pilot\Resources\Doc8643.txt"
           ) | ForEach-Object { if (-not (Test-Path $_)) { throw "Missing installed file: $_" } }
 
           Write-Host "Running installed package self-test"

@@ -33,10 +33,8 @@ Name: "xplane"; Description: "X-Plane 11/12 plugin"; Types: full
 [Files]
 Source: "{#KPilotClientDir}\*"; DestDir: "{app}"; Components: client; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#XPlanePluginDir}\*"; DestDir: "{code:GetXPlanePluginDir}\win_x64"; Components: xplane; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\plugin\Resources\*"; DestDir: "{code:GetXPlanePluginDir}\Resources"; Components: xplane; Flags: ignoreversion recursesubdirs createallsubdirs onlyifdoesntexist
 Source: "..\client\Resources\Sounds\*"; DestDir: "{localappdata}\org.kpilot.client\Sounds"; Components: client; Flags: ignoreversion recursesubdirs createallsubdirs
-
-[InstallDelete]
-Type: files; Name: "{code:GetXPlanePluginDir}\win_x64\xPilot.xpl"; Components: xplane
 
 [Icons]
 Name: "{group}\K-Pilot"; Filename: "{app}\K-Pilot.exe"
@@ -81,6 +79,26 @@ end;
 
 function GetXPlanePluginDir(Param: String): String;
 begin
-  { Keep the established data directory so existing CSL and Config.json remain usable. }
-  Result := AddBackslash(XPlanePage.Values[0]) + 'Resources\plugins\xPilot';
+  Result := AddBackslash(XPlanePage.Values[0]) + 'Resources\plugins\K-Pilot';
+end;
+
+procedure MigrateExistingCslConfig;
+var
+  OldConfig, NewConfig, ConfigText: String;
+begin
+  OldConfig := AddBackslash(XPlanePage.Values[0]) + 'Resources\plugins\xPilot\Resources\Config.json';
+  NewConfig := GetXPlanePluginDir('') + '\Resources\Config.json';
+  if FileExists(OldConfig) and not FileExists(NewConfig) and
+     LoadStringFromFile(OldConfig, ConfigText) then
+  begin
+    { Preserve CSL paths but give K-Pilot its own TCP endpoint. }
+    StringChangeEx(ConfigText, '53100', '53110', True);
+    SaveStringToFile(NewConfig, ConfigText, False);
+  end;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep = ssPostInstall) and WizardIsComponentSelected('xplane') then
+    MigrateExistingCslConfig;
 end;

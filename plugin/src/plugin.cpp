@@ -307,28 +307,28 @@ void MenuHandler(void* mRef, void* iRef)
 
 void RegisterMenuItems()
 {
-	PttCommand = XPLMCreateCommand("xpilot/ptt", "K-Pilot: Radio Push-to-Talk (PTT)");
+	PttCommand = XPLMCreateCommand("kpilot/ptt", "K-Pilot: Radio Push-to-Talk (PTT)");
 	XPLMRegisterCommandHandler(PttCommand, PttCommandHandler, 1, (void*)0);
 
-	SplitAudioChannelCommand = XPLMCreateCommand("xpilot/split_audio_channels", "K-Pilot: Split Audio Channels");
+	SplitAudioChannelCommand = XPLMCreateCommand("kpilot/split_audio_channels", "K-Pilot: Split Audio Channels");
 	XPLMRegisterCommandHandler(SplitAudioChannelCommand, SplitAudioChannelCommandHandler, 1, (void*)0);
 
-	ToggleMessageConsoleCommand = XPLMCreateCommand("xpilot/toggle_text_message_console", "K-Pilot: Toggle Text Message Console");
+	ToggleMessageConsoleCommand = XPLMCreateCommand("kpilot/toggle_text_message_console", "K-Pilot: Toggle Text Message Console");
 	XPLMRegisterCommandHandler(ToggleMessageConsoleCommand, ToggleMessageConsoleCommandHandler, 1, (void*)0);
 
-	ToggleMessgePreviewPanelCommnd = XPLMCreateCommand("xpilot/toggle_notification_panel", "K-Pilot: Toggle Notification Panel");
+	ToggleMessgePreviewPanelCommnd = XPLMCreateCommand("kpilot/toggle_notification_panel", "K-Pilot: Toggle Notification Panel");
 	XPLMRegisterCommandHandler(ToggleMessgePreviewPanelCommnd, ToggleMessagePreviewPanelCommandHandler, 1, (void*)0);
 
-	ToggleNearbyATCWindowCommand = XPLMCreateCommand("xpilot/toggle_nearby_atc", "K-Pilot: Toggle Nearby ATC Window");
+	ToggleNearbyATCWindowCommand = XPLMCreateCommand("kpilot/toggle_nearby_atc", "K-Pilot: Toggle Nearby ATC Window");
 	XPLMRegisterCommandHandler(ToggleNearbyATCWindowCommand, ToggleNearbyATCWindowCommandHandler, 1, (void*)0);
 
-	ToggleDefaultAtisCommand = XPLMCreateCommand("xpilot/toggle_default_atis", "K-Pilot: Toggle Default X-Plane ATIS");
+	ToggleDefaultAtisCommand = XPLMCreateCommand("kpilot/toggle_default_atis", "K-Pilot: Toggle Default X-Plane ATIS");
 	XPLMRegisterCommandHandler(ToggleDefaultAtisCommand, ToggleDefaultAtisCommandHandler, 1, (void*)0);
 
-	ToggleTcasCommand = XPLMCreateCommand("xpilot/toggle_tcas", "K-Pilot: Toggle TCAS Control");
+	ToggleTcasCommand = XPLMCreateCommand("kpilot/toggle_tcas", "K-Pilot: Toggle TCAS Control");
 	XPLMRegisterCommandHandler(ToggleTcasCommand, ToggleTcasCommandHandler, 1, (void*)0);
 
-	ToggleAircraftLabelsCommand = XPLMCreateCommand("xpilot/toggle_aircraft_labels", "K-Pilot: Toggle Aircraft Labels");
+	ToggleAircraftLabelsCommand = XPLMCreateCommand("kpilot/toggle_aircraft_labels", "K-Pilot: Toggle Aircraft Labels");
 	XPLMRegisterCommandHandler(ToggleAircraftLabelsCommand, ToggleAircraftLabelsCommandHandler, 1, (void*)0);
 
 	XPLMRegisterCommandHandler(ContactAtcCommand, ContactAtcCommandHandler, 1, (void*)0);

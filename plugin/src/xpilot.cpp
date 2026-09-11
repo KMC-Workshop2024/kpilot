@@ -31,23 +31,23 @@
 namespace xpilot
 {
 	XPilot::XPilot() :
-		m_pttPressed("xpilot/ptt", ReadWrite),
-		m_networkLoginStatus("xpilot/login/status", ReadOnly),
-		m_networkCallsign("xpilot/login/callsign", ReadWrite),
-		m_rxCom1("xpilot/audio/com1_rx", ReadWrite),
-		m_rxCom2("xpilot/audio/com2_rx", ReadWrite), // 0=Disconnected, 1=Pilot, 2=Observer
-		m_volumeSignalLevel("xpilot/audio/vu", ReadWrite),
-		m_aiControlled("xpilot/ai_controlled", ReadOnly),
-		m_aircraftCount("xpilot/num_aircraft", ReadOnly),
-		m_pluginVersion("xpilot/version", ReadOnly),
-		m_selcalCode("xpilot/selcal", ReadOnly),
-		m_selcalReceived("xpilot/selcal_received", ReadWrite),
-		m_selcalMuteOverride("xpilot/selcal_mute_override", ReadWrite),
-		m_com1StationCallsign("xpilot/com1_station_callsign", ReadOnly),
-		m_com2StationCallsign("xpilot/com2_station_callsign", ReadOnly),
-		m_com1OnHeadset("xpilot/audio/com1_on_headset", ReadWrite),
-		m_com2OnHeadset("xpilot/audio/com2_on_headset", ReadWrite),
-		m_splitAudioChannels("xpilot/audio/split_audio_channels", ReadWrite),
+		m_pttPressed("kpilot/ptt", ReadWrite),
+		m_networkLoginStatus("kpilot/login/status", ReadOnly),
+		m_networkCallsign("kpilot/login/callsign", ReadWrite),
+		m_rxCom1("kpilot/audio/com1_rx", ReadWrite),
+		m_rxCom2("kpilot/audio/com2_rx", ReadWrite), // 0=Disconnected, 1=Pilot, 2=Observer
+		m_volumeSignalLevel("kpilot/audio/vu", ReadWrite),
+		m_aiControlled("kpilot/ai_controlled", ReadOnly),
+		m_aircraftCount("kpilot/num_aircraft", ReadOnly),
+		m_pluginVersion("kpilot/version", ReadOnly),
+		m_selcalCode("kpilot/selcal", ReadOnly),
+		m_selcalReceived("kpilot/selcal_received", ReadWrite),
+		m_selcalMuteOverride("kpilot/selcal_mute_override", ReadWrite),
+		m_com1StationCallsign("kpilot/com1_station_callsign", ReadOnly),
+		m_com2StationCallsign("kpilot/com2_station_callsign", ReadOnly),
+		m_com1OnHeadset("kpilot/audio/com1_on_headset", ReadWrite),
+		m_com2OnHeadset("kpilot/audio/com2_on_headset", ReadWrite),
+		m_splitAudioChannels("kpilot/audio/split_audio_channels", ReadWrite),
 		m_xplaneAtisEnabled("sim/atc/atis_enabled", ReadWrite),
 		m_overrideAutoTune("sim/operation/override/override_autotune", ReadWrite),
 		m_frameRatePeriod("sim/operation/misc/frame_rate_period", ReadOnly),
@@ -59,7 +59,7 @@ namespace xpilot
 		m_transponderCode("sim/cockpit/radios/transponder_code", ReadWrite),
 		m_avionicsPower("sim/cockpit2/switches/avionics_power_on", ReadOnly)
 	{
-		m_bulkDataQuick = XPLMRegisterDataAccessor("xpilot/bulk/quick",
+		m_bulkDataQuick = XPLMRegisterDataAccessor("kpilot/bulk/quick",
 			xplmType_Data,
 			false,
 			NULL,
@@ -75,7 +75,7 @@ namespace xpilot
 			(void*)xpilot::dataRefs::DR_BULK_QUICK
 		);
 
-		m_bulkDataExpensive = XPLMRegisterDataAccessor("xpilot/bulk/expensive",
+		m_bulkDataExpensive = XPLMRegisterDataAccessor("kpilot/bulk/expensive",
 			xplmType_Data,
 			false,
 			NULL,
@@ -135,7 +135,7 @@ namespace xpilot
 		nng_setopt_int(m_socket, NNG_OPT_RECVBUF, 8192);
 		nng_setopt_int(m_socket, NNG_OPT_SENDBUF, 8192);
 
-		std::string url = "ipc:///tmp//xpilot.ipc";
+		std::string url = "ipc:///tmp//kpilot.ipc";
 		if (Config::GetInstance().GetUseTcpSocket() && Config::GetInstance().GetTcpPort() > 0)
 		{
 			url = string_format("tcp://*:%i", Config::GetInstance().GetTcpPort());

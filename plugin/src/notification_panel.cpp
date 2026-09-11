@@ -34,7 +34,7 @@ namespace xpilot
 	NotificationPanel::NotificationPanel(int left, int top, int right, int bottom) :
 		m_scrollToBottom(false),
 		m_alwaysVisible(false),
-		m_togglePanelCommand("xpilot/toggle_notification_panel", "K-Pilot: Notification Panel", [this] { Toggle(); }),
+		m_togglePanelCommand("kpilot/toggle_notification_panel", "K-Pilot: Notification Panel", [this] { Toggle(); }),
 		ImgWindow(left, top, right, bottom, xplm_WindowDecorationSelfDecorated, xplm_WindowLayerFloatingWindows)
 	{
 		SetWindowTitle("Notification Panel");

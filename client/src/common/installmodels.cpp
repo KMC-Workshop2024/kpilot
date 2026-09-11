@@ -121,7 +121,7 @@ QtPromise::QPromise<void> InstallModels::UnzipModels(const QString &path)
                     return;
                 }
 
-                QString xplanePath = QDir::fromNativeSeparators(pathAppend(path, "Resources/plugins/xPilot/Resources/CSL"));
+                QString xplanePath = QDir::fromNativeSeparators(pathAppend(path, "Resources/plugins/K-Pilot/Resources/CSL"));
 
                 QDir().mkdir(xplanePath); // create CSL directory if it doesn't exist
 
@@ -202,7 +202,7 @@ void InstallModels::CreatePluginConfig(const QString &path)
 {
     QJsonObject config;
 
-    QString tmp(pathAppend(path, "Resources/plugins/xPilot/Resources/CSL/Bluebell"));
+    QString tmp(pathAppend(path, "Resources/plugins/K-Pilot/Resources/CSL/Bluebell"));
     QString nativePath = QDir::toNativeSeparators(tmp);
 
     QJsonObject cslPath;
@@ -216,7 +216,7 @@ void InstallModels::CreatePluginConfig(const QString &path)
 
     QJsonDocument doc(config);
 
-    QFile configFile(pathAppend(path, "Resources/plugins/xPilot/Resources/Config.json"));
+    QFile configFile(pathAppend(path, "Resources/plugins/K-Pilot/Resources/Config.json"));
     configFile.open(QFile::WriteOnly);
     configFile.write(doc.toJson());
 }
@@ -285,7 +285,7 @@ void InstallModels::validatePath(QString path)
     bool pluginValid = false;
     QString pluginError = "K-Pilot plugin not found. Please re-run the K-Pilot installer and choose the correct X-Plane folder path.";
 
-    QDir xpilotPath(pathAppend(xplanePath.path(), "Resources/plugins/xPilot"));
+    QDir xpilotPath(pathAppend(xplanePath.path(), "Resources/plugins/K-Pilot"));
 
     // instead of checking if the directory is readable (because that's not a reliable method according to the qt docs),
     // create a temporary file to verify permissions instead

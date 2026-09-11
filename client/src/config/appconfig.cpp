@@ -161,7 +161,7 @@ void AppConfig::loadConfig()
     AlertDisconnect = getJsonValue(jsonMap, "AlertDisconnect", true);
     AlertNetworkBroadcast = getJsonValue(jsonMap, "AlertNetworkBroadcast", true);
     XplaneNetworkAddress = getJsonValue(jsonMap, "XplaneNetworkAddress", QString(DEFAULT_XPLANE_NETWORK_ADDRESS));
-    XplanePluginPort = getJsonValue<int>(jsonMap, "XplanePluginPort", 53100);
+    XplanePluginPort = getJsonValue<int>(jsonMap, "XplanePluginPort", DEFAULT_PLUGIN_PORT);
     XplaneUdpPort = getJsonValue<int>(jsonMap, "XplaneUdpPort", 49000);
     SilenceModelInstall = getJsonValue(jsonMap, "SilenceModelInstall", false);
     VisualMachines = getJsonValue(jsonMap, "VisualMachines", QStringList());

@@ -318,12 +318,12 @@ void XplaneAdapter::SubscribeDataRefs()
     SubscribeDataRef("sim/flightmodel2/gear/tire_steer_actual_deg[0]", DataRef::NoseWheelAngle, 15);
     SubscribeDataRef("sim/operation/prefs/replay_mode", DataRef::ReplayMode, 5);
     SubscribeDataRef("sim/time/paused", DataRef::Paused, 5);
-    SubscribeDataRef("xpilot/ptt", DataRef::PushToTalk, 15);
-    SubscribeDataRef("xpilot/selcal_mute_override", DataRef::SelcalMuteOverride, 5);
+    SubscribeDataRef("kpilot/ptt", DataRef::PushToTalk, 15);
+    SubscribeDataRef("kpilot/selcal_mute_override", DataRef::SelcalMuteOverride, 5);
     SubscribeDataRef("sim/version/xplane_internal_version", DataRef::XplaneVersionNumber, 1);
-    SubscribeDataRef("xpilot/audio/com1_on_headset", DataRef::Com1OnHeadset, 5);
-    SubscribeDataRef("xpilot/audio/com2_on_headset", DataRef::Com2OnHeadset, 5);
-    SubscribeDataRef("xpilot/audio/split_audio_channels", DataRef::SplitAudioChannels, 5);
+    SubscribeDataRef("kpilot/audio/com1_on_headset", DataRef::Com1OnHeadset, 5);
+    SubscribeDataRef("kpilot/audio/com2_on_headset", DataRef::Com2OnHeadset, 5);
+    SubscribeDataRef("kpilot/audio/split_audio_channels", DataRef::SplitAudioChannels, 5);
 }
 
 void XplaneAdapter::SubscribeDataRef(std::string dataRef, uint32_t id, uint32_t frequency)
@@ -386,7 +386,7 @@ void XplaneAdapter::setupNngSocket()
 
     const QList<QString> localhostAddresses = {"127.0.0.1","localhost"};
     if(AppConfig::getInstance()->XplaneNetworkAddress.isEmpty() || localhostAddresses.contains(AppConfig::getInstance()->XplaneNetworkAddress.toLower())) {
-        if((result = nng_dial(m_socket, "ipc:///tmp//xpilot.ipc", NULL, NNG_FLAG_NONBLOCK)) != 0) {
+        if((result = nng_dial(m_socket, "ipc:///tmp//kpilot.ipc", NULL, NNG_FLAG_NONBLOCK)) != 0) {
             emit nngSocketError(QString("Error dialing socket: %1").arg(nng_strerror(result)));
         }
     } else {
@@ -746,17 +746,17 @@ void XplaneAdapter::setComRxDataref(int radio, bool active)
     switch(radio)
     {
         case 0:
-            setDataRefValue("xpilot/audio/com1_rx", (int)active);
+            setDataRefValue("kpilot/audio/com1_rx", (int)active);
             break;
         case 1:
-            setDataRefValue("xpilot/audio/com2_rx", (int)active);
+            setDataRefValue("kpilot/audio/com2_rx", (int)active);
             break;
     }
 }
 
 void XplaneAdapter::setVuDataref(float vu)
 {
-    setDataRefValue("xpilot/audio/vu", vu);
+    setDataRefValue("kpilot/audio/vu", vu);
 }
 
 void XplaneAdapter::ignoreAircraft(QString callsign)
@@ -788,21 +788,21 @@ void XplaneAdapter::showIgnoreList()
 
 void XplaneAdapter::selcalAlertReceived()
 {
-    setDataRefValue("xpilot/selcal_received", 1);
+    setDataRefValue("kpilot/selcal_received", 1);
     QTimer::singleShot(1000, this, [&]{
-        setDataRefValue("xpilot/selcal_received", 0);
+        setDataRefValue("kpilot/selcal_received", 0);
     });
 }
 
 void XplaneAdapter::setCom1OnHeadset(bool onHeadset)
 {
-    setDataRefValue("xpilot/audio/com1_on_headset", (int)onHeadset);
+    setDataRefValue("kpilot/audio/com1_on_headset", (int)onHeadset);
     m_com1HeadsetStateSet = true;
 }
 
 void XplaneAdapter::setCom2OnHeadset(bool onHeadset)
 {
-    setDataRefValue("xpilot/audio/com2_on_headset", (int)onHeadset);
+    setDataRefValue("kpilot/audio/com2_on_headset", (int)onHeadset);
     m_com2HeadsetStateSet = true;
 }
 
@@ -815,7 +815,7 @@ void XplaneAdapter::overrideRadioPower(bool hasPower)
 
 void XplaneAdapter::setSplitAudioChannels(bool split)
 {
-    setDataRefValue("xpilot/audio/split_audio_channels", (int)split);
+    setDataRefValue("kpilot/audio/split_audio_channels", (int)split);
 }
 
 void XplaneAdapter::AddAircraftToSimulator(const NetworkAircraft &aircraft)

@@ -84,7 +84,7 @@ namespace xpilot
 					}
 					catch (...)
 					{
-						SetTcpPort(53100);
+						SetTcpPort(53110);
 					}
 				}
 				else

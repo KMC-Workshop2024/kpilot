@@ -59,3 +59,8 @@ add_test(
     NAME installer_plugin_layout
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/test_installer_plugin_layout.cmake
 )
+
+add_test(
+    NAME xplane_coexistence
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/test_xplane_coexistence.cmake
+)

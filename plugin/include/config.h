@@ -191,7 +191,7 @@ namespace xpilot
 		bool m_showHideLabels = true;
 		bool m_debugModelMatching = false;
 		bool m_defaultAtisEnabled = false;
-		int m_tcpPort = 53100;
+		int m_tcpPort = 53110;
 		bool m_useTcpSocket = false;
 		bool m_overrideContactAtcCommand = false;
 		int m_labelColor = COLOR_YELLOW;
