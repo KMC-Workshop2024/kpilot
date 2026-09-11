@@ -207,7 +207,7 @@ namespace xpilot
 
 		if (!Config::GetInstance().HasValidPaths())
 		{
-			std::string err = "There are no valid CSL paths configured. Please verify your CSL configuration in X-Plane (Plugins > xPilot > Settings > CSL Configuration).";
+			std::string err = "There are no valid CSL paths configured. Please verify your CSL configuration in X-Plane (Plugins > K-Pilot > Settings > CSL Configuration).";
 			AddNotificationShowPanel(err, Colors::Red);
 			LOG_MSG(logERROR, err.c_str());
 		}
@@ -754,7 +754,7 @@ namespace xpilot
 		if (XPMPHasControlOfAIAircraft())
 		{
 			XPMPMultiplayerDisable();
-			LOG_MSG(logDEBUG, "xPilot has released TCAS control");
+			LOG_MSG(logDEBUG, "K-Pilot has released TCAS control");
 		}
 	}
 

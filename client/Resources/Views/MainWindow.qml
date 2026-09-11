@@ -107,19 +107,16 @@ Window {
         // we call this again so we can present the permission error if applicable
         AppConfig.loadConfig()
 
-        appendMessage(`xPilot version ${appVersion}`, Enum.MessageType.Info)
+        appendMessage(`K-Pilot version ${appVersion}`, Enum.MessageType.Info)
         if (AppConfig.XplaneNetworkAddress !== "127.0.0.1" && AppConfig.XplaneNetworkAddress !== "localhost") {
             appendMessage(`Waiting for X-Plane connection (${AppConfig.XplaneNetworkAddress})...
-                          Please make sure X-Plane is running and a flight is loaded. If you're having trouble connecting xPilot to X-Plane, please see the xPilot FAQ: https://xpilot-project.org/waiting-for-connection`, Enum.MessageType.Info)
+                          Please make sure X-Plane is running, a flight is loaded, and the K-Pilot plugin is installed.`, Enum.MessageType.Info)
         } else {
-            appendMessage("Waiting for X-Plane connection... Please make sure X-Plane is running and a flight is loaded. If you're having trouble connecting xPilot to X-Plane, please see the xPilot FAQ: https://xpilot-project.org/waiting-for-connection", Enum.MessageType.Info)
+            appendMessage("Waiting for X-Plane connection... Please make sure X-Plane is running, a flight is loaded, and the K-Pilot plugin is installed.", Enum.MessageType.Info)
         }
 
         if (AppConfig.configRequired()) {
             configRequiredDialog.open()
-        }
-        else if (!AppConfig.SilenceModelInstall) {
-            createCslDownloadWindow()
         }
 
         if (AppConfig.KeepWindowVisible) {
@@ -245,7 +242,7 @@ Window {
 
         function onUnzipFinished() {
             extractCslModelsWindow.destroy()
-            appendMessage(`CSL aircraft model package successfully installed! Please restart xPilot and X-Plane before connecting to the network.
+            appendMessage(`CSL aircraft model package successfully installed! Please restart K-Pilot and X-Plane before connecting to the network.
                           If you need to install the model set for another X-Plane installation, enter the command .downloadcsl`, Enum.MessageType.Info)
             AppConfig.SilenceModelInstall = true
         }
@@ -337,18 +334,17 @@ Window {
         }
 
         function onInvalidPluginVersion() {
-            appendMessage(`Unsupported xPilot plugin version detected.
-                          Please close X-Plane and reinstall the latest version of xPilot.`, Enum.MessageType.Error)
+            appendMessage(`Unsupported K-Pilot plugin version detected.
+                          Please close X-Plane and reinstall the latest version of K-Pilot.`, Enum.MessageType.Error)
             notificationSoundEngine.playError()
             mainWindow.alert(0)
         }
 
         function onInvalidCslConfiguration() {
             appendMessage(`No valid CSL paths are configured or enabled, or you have no CSL models installed.
-                          Please verify the CSL configuration in X-Plane (Plugins > xPilot > Settings). If you need assistance configuring your CSL paths,
-                          see the "CSL Configuration" section in the xPilot Documentation (http://xpilot-project.org).
-                          Restart X-Plane and xPilot after you have properly configured your CSL models.
-                          You can have xPilot install a model set for you by entering the command .downloadcsl`, Enum.MessageType.Error)
+                          Please verify the CSL configuration in X-Plane (Plugins > K-Pilot > Settings).
+                          Restart X-Plane and K-Pilot after you have properly configured your CSL models.
+                          You can have K-Pilot install a model set by entering the command .downloadcsl`, Enum.MessageType.Error)
             notificationSoundEngine.playError()
             mainWindow.alert(0)
         }
@@ -907,13 +903,13 @@ Window {
                                     AppConfig.XplaneNetworkAddress = cmd[1]
                                     AppConfig.saveConfig()
                                     appendMessage(`X-Plane network address set to ${AppConfig.XplaneNetworkAddress}.
-                                                  You must restart xPilot for the changes to take effect.`, Enum.MessageType.Info, tabIndex)
+                                                  You must restart K-Pilot for the changes to take effect.`, Enum.MessageType.Info, tabIndex)
                                 }
                                 else {
                                     AppConfig.XplaneNetworkAddress = "127.0.0.1"
                                     AppConfig.saveConfig()
                                     appendMessage(`X-Plane network address reset to localhost (127.0.0.1).
-                                                  You must restart xPilot for the changes to take effect.`, Enum.MessageType.Info, tabIndex)
+                                                  You must restart K-Pilot for the changes to take effect.`, Enum.MessageType.Info, tabIndex)
                                 }
                             }
                             else if(message.startsWith(".visualip")) {
@@ -921,7 +917,7 @@ Window {
                                     AppConfig.VisualMachines = []
                                     AppConfig.saveConfig()
                                     appendMessage(`X-Plane visual machine addresses cleared.
-                                                  You must restart xPilot for the changes to take effect.`, Enum.MessageType.Info, tabIndex)
+                                                  You must restart K-Pilot for the changes to take effect.`, Enum.MessageType.Info, tabIndex)
                                 }
                                 else {
                                     AppConfig.VisualMachines = []
@@ -930,17 +926,11 @@ Window {
                                     }
                                     AppConfig.saveConfig()
                                     appendMessage(`X-Plane visual machine(s) set to ${AppConfig.VisualMachines.join(", ")}.
-                                                  You must restart xPilot for the changes to take effect.`, Enum.MessageType.Info, tabIndex)
+                                                  You must restart K-Pilot for the changes to take effect.`, Enum.MessageType.Info, tabIndex)
                                 }
                             }
                             else if(message === ".downloadcsl") {
-                                if(AppConfig.configRequired()) {
-                                    appendMessage(`Before you can install the CSL model set, you must configure xPilot.
-                                                  Open the Settings window to configure xPilot.`, Enum.MessageType.Error, tabIndex)
-                                }
-                                else {
-                                    createCslDownloadWindow()
-                                }
+                                appendMessage("Automatic CSL download is unavailable in this private-network build. Install a CSL package manually.", Enum.MessageType.Error, tabIndex)
                             }
                             else if(message === ".appdata") {
                                 AppConfig.openAppDataFolder()

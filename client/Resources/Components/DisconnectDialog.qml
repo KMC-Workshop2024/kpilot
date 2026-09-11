@@ -23,7 +23,7 @@ Popup {
 
     Text {
         id: lblAskDisconnect
-        text: "You are still connected to the network. Are you sure you want to close xPilot?"
+        text: "You are still connected to the network. Are you sure you want to close K-Pilot?"
         width: 500
         wrapMode: Text.Wrap
         font.pixelSize: 14

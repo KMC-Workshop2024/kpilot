@@ -304,7 +304,8 @@ bool AppConfig::saveConfig()
 
 bool AppConfig::configRequired()
 {
-    return VatsimId.isEmpty() || VatsimPasswordDecrypted.isEmpty() || Name.isEmpty();
+    return VatsimId.isEmpty() || VatsimPasswordDecrypted.isEmpty() || Name.isEmpty() ||
+           FsdServerAddress.trimmed().isEmpty() || FsdServerPort < 1 || FsdServerPort > 65535;
 }
 
 void AppConfig::openAppDataFolder()

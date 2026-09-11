@@ -47,6 +47,9 @@ jobs:
           $ErrorActionPreference = "Stop"
           cmake -S plugin -B build/kpilot-plugin -G "Visual Studio 17 2022" -A x64
           cmake --build build/kpilot-plugin --config Release --parallel
+          if (-not (Test-Path "build/kpilot-plugin/win_x64/K-Pilot.xpl")) {
+            throw "K-Pilot X-Plane plugin artifact was not produced"
+          }
 
       - name: Build desktop client with private-network identity
         shell: pwsh
@@ -94,7 +97,7 @@ jobs:
           Write-Host "Installing $installer to $installDir"
           $install = Start-Process $installer -ArgumentList @(
             '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART',
-            "/DIR=$installDir", '/COMPONENTS=client,msfs2024', "/LOG=$installLog"
+            "/DIR=$installDir", '/COMPONENTS=client', "/LOG=$installLog"
           ) -Wait -PassThru
           if ($install.ExitCode -ne 0) { throw "Installer exited with $($install.ExitCode)" }
           Write-Host "Installer completed"

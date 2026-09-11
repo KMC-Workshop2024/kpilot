@@ -21,7 +21,7 @@ Popup {
 
     Text {
         id: labelAskDownload
-        text: "It looks like this may be the first time you've run xPilot on this computer. Some configuration items are required before you can connect to the network. Would you like to configure xPilot now?"
+        text: "Some configuration items are required before you can connect to the private network. Would you like to configure K-Pilot now?"
         width: 500
         wrapMode: Text.Wrap
         font.pixelSize: 14

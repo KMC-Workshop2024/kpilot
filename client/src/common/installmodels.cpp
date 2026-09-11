@@ -48,80 +48,6 @@ InstallModels::~InstallModels()
 
 }
 
-QtPromise::QPromise<QString> InstallModels::GetAuthToken()
-{
-    return QtPromise::QPromise<QString>{[&](const auto resolve, const auto reject)
-        {
-            QJsonObject obj;
-            obj["cid"] = AppConfig::getInstance()->VatsimId;
-            obj["password"] = AppConfig::getInstance()->VatsimPasswordDecrypted;
-            QJsonDocument doc(obj);
-            QByteArray data = doc.toJson();
-
-            const QUrl url(QStringLiteral("https://auth.vatsim.net/api/fsd-jwt"));
-            QNetworkRequest request(url);
-            request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-            m_reply = nam->post(request, data);
-
-            QObject::connect(m_reply, &QNetworkReply::finished, [=]{
-                if(m_reply->error() == QNetworkReply::NoError) {
-                    QJsonDocument jsonResponse = QJsonDocument::fromJson(m_reply->readAll());
-                    QJsonObject jsonObject = jsonResponse.object();
-
-                    if(jsonObject.contains("success") && jsonObject["success"] == false) {
-                        QString error = jsonObject["error_msg"].toString();
-                        if(error == "Password is Incorrect") {
-                            emit errorEncountered("CSL Download Error: Your VATSIM ID or Password is incorrect. "
-                                                  "Open Settings and verify your VATSIM ID and Password are correct.");
-                        }
-                        else {
-                            emit errorEncountered("CSL Download Error: " + error);
-                        }
-                    }
-                    else {
-                        QString token = jsonObject["token"].toString();
-                        resolve(token);
-                    }
-                }
-                m_reply->deleteLater();
-            });
-        }};
-}
-
-QtPromise::QPromise<QString> InstallModels::ValidateAuthToken(const QString &token)
-{
-    return QtPromise::QPromise<QString>{[&](const auto resolve, const auto reject)
-        {
-            QJsonObject obj;
-            obj["token"] = token;
-            QJsonDocument doc(obj);
-            QByteArray data = doc.toJson();
-
-            const QUrl url(QStringLiteral("https://xpilot-project.org/api/v3/DownloadModelSet"));
-            QNetworkRequest request(url);
-            request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-            m_reply = nam->post(request, data);
-
-            QObject::connect(m_reply, &QNetworkReply::finished, [=]{
-                if(m_reply->error() == QNetworkReply::NoError) {
-                    QJsonDocument jsonResponse = QJsonDocument::fromJson(m_reply->readAll());
-                    QJsonObject jsonObject = jsonResponse.object();
-
-                    if(jsonObject.contains("success") && jsonObject["success"] == false) {
-                        emit errorEncountered(jsonObject["error_msg"].toString());
-                    }
-                    else {
-                        QString downloadUrl = jsonObject["download_url"].toString();
-                        resolve(downloadUrl);
-                    }
-                }
-                m_reply->deleteLater();
-            });
-        }};
-}
-
 QtPromise::QPromise<void> InstallModels::DownloadModels(const QString &url)
 {
     return QtPromise::QPromise<void>{[&](const auto resolve, const auto reject)
@@ -140,7 +66,7 @@ QtPromise::QPromise<void> InstallModels::DownloadModels(const QString &url)
             m_file = new QSaveFile(pathAppend(tempPath, "Bluebell.zip"));
             if(!m_file->open(QIODevice::WriteOnly))
             {
-                reject(QString{"Error opening file for writing. Restart xPilot and try again."});
+                reject(QString{"Error opening file for writing. Restart K-Pilot and try again."});
                 return;
             }
 
@@ -184,18 +110,18 @@ QtPromise::QPromise<void> InstallModels::UnzipModels(const QString &path)
                 QString tempPath = QDir::fromNativeSeparators(AppConfig::dataRoot());
 
                 if(!QFile(pathAppend(tempPath, "Bluebell.zip")).exists()) {
-                    reject(QString{"Model package not found. Re-launch xPilot and try downloading the CSL models again."});
+                    reject(QString{"Model package not found. Re-launch K-Pilot and try downloading the CSL models again."});
                     return;
                 }
 
                 ZipArchive zf(pathAppend(tempPath, "Bluebell.zip").toStdString());
                 if(!zf.open(ZipArchive::ReadOnly))
                 {
-                    reject(QString{"Error opening file for extracting. Re-launch xPilot and try downloading the CSL models again."});
+                    reject(QString{"Error opening file for extracting. Re-launch K-Pilot and try downloading the CSL models again."});
                     return;
                 }
 
-                QString xplanePath = QDir::fromNativeSeparators(pathAppend(path, "Resources/plugins/xPilot/Resources/CSL"));
+                QString xplanePath = QDir::fromNativeSeparators(pathAppend(path, "Resources/plugins/K-Pilot/Resources/CSL"));
 
                 QDir().mkdir(xplanePath); // create CSL directory if it doesn't exist
 
@@ -276,7 +202,7 @@ void InstallModels::CreatePluginConfig(const QString &path)
 {
     QJsonObject config;
 
-    QString tmp(pathAppend(path, "Resources/plugins/xPilot/Resources/CSL/Bluebell"));
+    QString tmp(pathAppend(path, "Resources/plugins/K-Pilot/Resources/CSL/Bluebell"));
     QString nativePath = QDir::toNativeSeparators(tmp);
 
     QJsonObject cslPath;
@@ -290,7 +216,7 @@ void InstallModels::CreatePluginConfig(const QString &path)
 
     QJsonDocument doc(config);
 
-    QFile configFile(pathAppend(path, "Resources/plugins/xPilot/Resources/Config.json"));
+    QFile configFile(pathAppend(path, "Resources/plugins/K-Pilot/Resources/Config.json"));
     configFile.open(QFile::WriteOnly);
     configFile.write(doc.toJson());
 }
@@ -312,15 +238,7 @@ void InstallModels::downloadModels()
         emit setXplanePath();
     }
     else {
-        GetAuthToken().then([&](const QString& token){
-            ValidateAuthToken(token).then([&](const QString& url) {
-                DownloadModels(url).then([&]{
-                    emit setXplanePath();
-                }).fail([&](const QString& err){
-                    errorEncountered("Download error: " + err);
-                });
-            });
-        });
+        emit errorEncountered("Automatic CSL download is unavailable in this private-network build. Install a CSL package manually.");
     }
 }
 
@@ -365,21 +283,21 @@ void InstallModels::validatePath(QString path)
     }
 
     bool pluginValid = false;
-    QString pluginError = "xPilot plugin not found. Please re-run the xPilot installer and make sure to choose the correct X-Plane folder path.";
+    QString pluginError = "K-Pilot plugin not found. Please re-run the K-Pilot installer and choose the correct X-Plane folder path.";
 
-    QDir xpilotPath(pathAppend(xplanePath.path(), "Resources/plugins/xPilot"));
+    QDir xpilotPath(pathAppend(xplanePath.path(), "Resources/plugins/K-Pilot"));
 
     // instead of checking if the directory is readable (because that's not a reliable method according to the qt docs),
     // create a temporary file to verify permissions instead
     QTemporaryFile temp2(xpilotPath.path() + "/");
     if(!temp2.open()) {
-        QString err("The xPilot plugin resources folder (%1) is not readable. Verify the folder permissions and try again.");
+        QString err("The K-Pilot plugin resources folder (%1) is not readable. Verify the folder permissions and try again.");
         emit invalidXplanePath(err.arg(xpilotPath.path()));
         return;
     }
 
     if(BuildConfig::isRunningOnWindowsPlatform()) {
-        QString pluginFile = pathAppend(xpilotPath.path(), "win_x64/xPilot.xpl");
+        QString pluginFile = pathAppend(xpilotPath.path(), "win_x64/K-Pilot.xpl");
         pluginValid = QFileInfo::exists(pluginFile) && QFileInfo(pluginFile).isFile();
         if(!pluginValid) {
             emit invalidXplanePath(pluginError);
@@ -387,7 +305,7 @@ void InstallModels::validatePath(QString path)
         }
     }
     else if(BuildConfig::isRunningOnMacOSPlatform()) {
-        QString pluginFile = pathAppend(xpilotPath.path(), "mac_x64/xPilot.xpl");
+        QString pluginFile = pathAppend(xpilotPath.path(), "mac_x64/K-Pilot.xpl");
         pluginValid = QFileInfo::exists(pluginFile) && QFileInfo(pluginFile).isFile();
         if(!pluginValid) {
             emit invalidXplanePath(pluginError);
@@ -395,7 +313,7 @@ void InstallModels::validatePath(QString path)
         }
     }
     else if(BuildConfig::isRunningOnLinuxPlatform()) {
-        QString pluginFile = pathAppend(xpilotPath.path(), "lin_x64/xPilot.xpl");
+        QString pluginFile = pathAppend(xpilotPath.path(), "lin_x64/K-Pilot.xpl");
         pluginValid = QFileInfo::exists(pluginFile) && QFileInfo(pluginFile).isFile();
         if(!pluginValid) {
             emit invalidXplanePath(pluginError);

@@ -276,13 +276,13 @@ namespace xpilot
                 {
                     QStringList realName;
                     realName.append(AppConfig::getInstance()->NameWithHomeAirport());
-                    realName.append(m_connectInfo.TowerViewMode ? "xPilot tower view connection" : "");
+                    realName.append(m_connectInfo.TowerViewMode ? "K-Pilot tower view connection" : "");
                     realName.append(QString::number((int)NetworkRating::OBS));
                     m_fsd.SendPDU(PDUClientQueryResponse(m_connectInfo.Callsign, pdu.From, ClientQueryType::RealName, realName));
                 }
                 break;
             case ClientQueryType::INF:
-                QString inf = QString("xPilot %1 PID=%2 (%3) IP=%4 SYS_UID=%5 FS_VER=XPlane LT=%6 LO=%7 AL=%8")
+                QString inf = QString("K-Pilot %1 PID=%2 (%3) IP=%4 SYS_UID=%5 FS_VER=XPlane LT=%6 LO=%7 AL=%8")
                         .arg(BuildConfig::getVersionString(),
                              AppConfig::getInstance()->VatsimId,
                              AppConfig::getInstance()->NameWithHomeAirport(),
@@ -466,7 +466,7 @@ namespace xpilot
         {
             if(m_connectInfo.TowerViewMode)
             {
-                m_fsd.SendPDU(PDUTextMessage(m_connectInfo.Callsign, pdu.From.toUpper(), "This is a xPilot tower view connection. The user is unable to respond to this message. Please contact them through their ATC client connection."));
+                m_fsd.SendPDU(PDUTextMessage(m_connectInfo.Callsign, pdu.From.toUpper(), "This is a K-Pilot tower view connection. The user is unable to respond to this message. Please contact them through their ATC client connection."));
                 return;
             }
             emit privateMessageReceived(pdu.From, pdu.Message);
@@ -895,7 +895,7 @@ namespace xpilot
     void NetworkManager::connectToNetwork(QString callsign, QString typeCode, QString selcal, bool observer)
     {
         if(AppConfig::getInstance()->configRequired()) {
-            emit notificationPosted("It looks like this may be the first time you've run xPilot on this computer. Some configuration items are required before you can connect to the network. Open Settings and verify your network credentials are saved.", MessageType::Error);
+            emit notificationPosted("K-Pilot is not fully configured. Open Settings and save the server address, port, CID, password, and name.", MessageType::Error);
             return;
         }
         if(!AppConfig::getInstance()->MicrophoneCalibrated)
@@ -913,34 +913,19 @@ namespace xpilot
             connectInfo.ObserverMode = observer;
             m_connectInfo = connectInfo;
 
-            m_clientProperties = {"xPilot", FSD_VERSION_MAJOR, FSD_VERSION_MINOR, BuildConfig::VatsimClientId(), BuildConfig::VatsimClientKey()};
+            m_clientProperties = {"K-Pilot", FSD_VERSION_MAJOR, FSD_VERSION_MINOR, BuildConfig::VatsimClientId(), BuildConfig::VatsimClientKey()};
             m_fsd.SetClientProperties(m_clientProperties);
 
             emit notificationPosted("Connecting to network...", MessageType::Info);
 
-            const QString privateAddress = ServerEndpoint::normalizeAddress(AppConfig::getInstance()->FsdServerAddress);
-            const int privatePort = AppConfig::getInstance()->FsdServerPort;
-            m_privateNetwork = !privateAddress.isEmpty();
-            if(m_privateNetwork) {
-                if(!ServerEndpoint::isValidAddress(privateAddress) || !ServerEndpoint::isValidPort(privatePort)) {
-                    emit notificationPosted("The private server address or port is invalid.", MessageType::Error);
-                    return;
-                }
-                m_fsd.Connect(privateAddress, static_cast<quint32>(privatePort), false);
+            const QString serverAddress = ServerEndpoint::normalizeAddress(AppConfig::getInstance()->FsdServerAddress);
+            const int serverPort = AppConfig::getInstance()->FsdServerPort;
+            m_privateNetwork = true;
+            if(!ServerEndpoint::isValidAddress(serverAddress) || !ServerEndpoint::isValidPort(serverPort)) {
+                emit notificationPosted("The server address or port is invalid.", MessageType::Error);
                 return;
             }
-
-            QString serverName = AppConfig::getInstance()->getNetworkServer();
-            if(AppConfig::getInstance()->ServerName == "AUTOMATIC") {
-                GetBestFsdServer().then([&](const QString& bestServer) {
-                    m_fsd.Connect(bestServer, 6809);
-                }).fail([&, serverName](){
-                    m_fsd.Connect(serverName, 6809);
-                });
-            }
-            else {
-                m_fsd.Connect(serverName, 6809);
-            }
+            m_fsd.Connect(serverAddress, static_cast<quint32>(serverPort), false);
         }
         else
         {
@@ -951,7 +936,7 @@ namespace xpilot
     void NetworkManager::connectTowerView()
     {
         if(AppConfig::getInstance()->configRequired()) {
-            emit notificationPosted("It looks like this may be the first time you've run xPilot on this computer. Some configuration items are required before you can connect to the network. Open Settings and verify your network credentials are saved.", MessageType::Error);
+            emit notificationPosted("K-Pilot is not fully configured. Open Settings and save the server address, port, CID, password, and name.", MessageType::Error);
             return;
         }
 
@@ -960,22 +945,19 @@ namespace xpilot
         connectInfo.TowerViewMode = true;
         m_connectInfo = connectInfo;
 
-        m_clientProperties = {"xPilot", FSD_VERSION_MAJOR, FSD_VERSION_MINOR, BuildConfig::TowerviewClientId(), BuildConfig::VatsimClientKey()};
+        m_clientProperties = {"K-Pilot", FSD_VERSION_MAJOR, FSD_VERSION_MINOR, BuildConfig::TowerviewClientId(), BuildConfig::VatsimClientKey()};
         m_fsd.SetClientProperties(m_clientProperties);
 
         emit notificationPosted("Connecting to network...", MessageType::Info);
 
-        QString serverName = AppConfig::getInstance()->getNetworkServer();
-        if(AppConfig::getInstance()->ServerName == "AUTOMATIC") {
-            GetBestFsdServer().then([&](const QString& bestServer) {
-                m_fsd.Connect(bestServer, 6809);
-            }).fail([&, serverName](){
-                m_fsd.Connect(serverName, 6809);
-            });
+        const QString serverAddress = ServerEndpoint::normalizeAddress(AppConfig::getInstance()->FsdServerAddress);
+        const int serverPort = AppConfig::getInstance()->FsdServerPort;
+        m_privateNetwork = true;
+        if(!ServerEndpoint::isValidAddress(serverAddress) || !ServerEndpoint::isValidPort(serverPort)) {
+            emit notificationPosted("The server address or port is invalid.", MessageType::Error);
+            return;
         }
-        else {
-            m_fsd.Connect(serverName, 6809);
-        }
+        m_fsd.Connect(serverAddress, static_cast<quint32>(serverPort), false);
     }
 
     void NetworkManager::disconnectFromNetwork()

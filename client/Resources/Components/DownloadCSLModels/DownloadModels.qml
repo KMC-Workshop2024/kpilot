@@ -56,7 +56,7 @@ Popup {
 
     Text {
         id: labelAskDownload
-        text: "It looks like this is your first time using xPilot. Before you can connect to the network, you must " +
+        text: "It looks like this is your first time using K-Pilot. Before you can connect to the network, you must " +
               "install a CSL aircraft model set. Would you like to download and install one now?\r\n\r\nDownload size: Approximately 560MB.\r\n\r\n" +
               "If you choose No, you will have to manually install a model set yourself, or use an existing model set that you already have installed.\r\n"
         font.pixelSize: 14

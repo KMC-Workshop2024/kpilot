@@ -92,15 +92,15 @@ void HideTransmitIndicator()
 PLUGIN_API int XPluginStart(char* outName, char* outSignature, char* outDescription)
 {
 	strncpy_s(outName, 255, string_format("%s %s", PLUGIN_NAME, PLUGIN_VERSION_STRING).c_str(), 100);
-	strncpy_s(outSignature, 255, "org.vatsim.xpilot", 100);
-	strncpy_s(outDescription, 255, "X-Plane pilot client for VATSIM.", 100);
+	strncpy_s(outSignature, 255, "org.kpilot.client", 100);
+	strncpy_s(outDescription, 255, "K-Pilot private-network flight simulation client.", 100);
 
 	try
 	{
 		XPLMEnableFeature("XPLM_USE_NATIVE_PATHS", 1);
 		XPMPSetPluginName(PLUGIN_NAME);
 		RegisterMenuItems();
-		LOG_MSG(logMSG, "xPilot version %s initialized", PLUGIN_VERSION_STRING);
+		LOG_MSG(logMSG, "K-Pilot version %s initialized", PLUGIN_VERSION_STRING);
 	}
 	catch (const std::exception& e)
 	{
@@ -126,7 +126,7 @@ PLUGIN_API int XPluginEnable(void)
 		XPImgWindowInit();
 		Config::GetInstance().LoadConfig();
 		environment = std::make_unique<xpilot::XPilot>();
-		LOG_MSG(logMSG, "xPilot plugin enabled");
+		LOG_MSG(logMSG, "K-Pilot plugin enabled");
 	}
 	catch (std::exception& e)
 	{
@@ -150,7 +150,7 @@ PLUGIN_API void XPluginDisable(void)
 		environment.reset();
 		XPMPMultiplayerDisable();
 		XPMPMultiplayerCleanup();
-		LOG_MSG(logMSG, "xPilot plugin disabled");
+		LOG_MSG(logMSG, "K-Pilot plugin disabled");
 	}
 	catch (std::exception& e)
 	{
@@ -307,34 +307,34 @@ void MenuHandler(void* mRef, void* iRef)
 
 void RegisterMenuItems()
 {
-	PttCommand = XPLMCreateCommand("xpilot/ptt", "xPilot: Radio Push-to-Talk (PTT)");
+	PttCommand = XPLMCreateCommand("xpilot/ptt", "K-Pilot: Radio Push-to-Talk (PTT)");
 	XPLMRegisterCommandHandler(PttCommand, PttCommandHandler, 1, (void*)0);
 
-	SplitAudioChannelCommand = XPLMCreateCommand("xpilot/split_audio_channels", "xPilot: Split Audio Channels");
+	SplitAudioChannelCommand = XPLMCreateCommand("xpilot/split_audio_channels", "K-Pilot: Split Audio Channels");
 	XPLMRegisterCommandHandler(SplitAudioChannelCommand, SplitAudioChannelCommandHandler, 1, (void*)0);
 
-	ToggleMessageConsoleCommand = XPLMCreateCommand("xpilot/toggle_text_message_console", "xPilot: Toggle Text Message Console");
+	ToggleMessageConsoleCommand = XPLMCreateCommand("xpilot/toggle_text_message_console", "K-Pilot: Toggle Text Message Console");
 	XPLMRegisterCommandHandler(ToggleMessageConsoleCommand, ToggleMessageConsoleCommandHandler, 1, (void*)0);
 
-	ToggleMessgePreviewPanelCommnd = XPLMCreateCommand("xpilot/toggle_notification_panel", "xPilot: Toggle Notification Panel");
+	ToggleMessgePreviewPanelCommnd = XPLMCreateCommand("xpilot/toggle_notification_panel", "K-Pilot: Toggle Notification Panel");
 	XPLMRegisterCommandHandler(ToggleMessgePreviewPanelCommnd, ToggleMessagePreviewPanelCommandHandler, 1, (void*)0);
 
-	ToggleNearbyATCWindowCommand = XPLMCreateCommand("xpilot/toggle_nearby_atc", "xPilot: Toggle Nearby ATC Window");
+	ToggleNearbyATCWindowCommand = XPLMCreateCommand("xpilot/toggle_nearby_atc", "K-Pilot: Toggle Nearby ATC Window");
 	XPLMRegisterCommandHandler(ToggleNearbyATCWindowCommand, ToggleNearbyATCWindowCommandHandler, 1, (void*)0);
 
-	ToggleDefaultAtisCommand = XPLMCreateCommand("xpilot/toggle_default_atis", "xPilot: Toggle Default X-Plane ATIS");
+	ToggleDefaultAtisCommand = XPLMCreateCommand("xpilot/toggle_default_atis", "K-Pilot: Toggle Default X-Plane ATIS");
 	XPLMRegisterCommandHandler(ToggleDefaultAtisCommand, ToggleDefaultAtisCommandHandler, 1, (void*)0);
 
-	ToggleTcasCommand = XPLMCreateCommand("xpilot/toggle_tcas", "xPilot: Toggle TCAS Control");
+	ToggleTcasCommand = XPLMCreateCommand("xpilot/toggle_tcas", "K-Pilot: Toggle TCAS Control");
 	XPLMRegisterCommandHandler(ToggleTcasCommand, ToggleTcasCommandHandler, 1, (void*)0);
 
-	ToggleAircraftLabelsCommand = XPLMCreateCommand("xpilot/toggle_aircraft_labels", "xPilot: Toggle Aircraft Labels");
+	ToggleAircraftLabelsCommand = XPLMCreateCommand("xpilot/toggle_aircraft_labels", "K-Pilot: Toggle Aircraft Labels");
 	XPLMRegisterCommandHandler(ToggleAircraftLabelsCommand, ToggleAircraftLabelsCommandHandler, 1, (void*)0);
 
 	XPLMRegisterCommandHandler(ContactAtcCommand, ContactAtcCommandHandler, 1, (void*)0);
 
-	PluginMenuIdx = XPLMAppendMenuItem(XPLMFindPluginsMenu(), "xPilot", nullptr, 0);
-	PluginMenu = XPLMCreateMenu("xPilot", XPLMFindPluginsMenu(), PluginMenuIdx, MenuHandler, nullptr);
+	PluginMenuIdx = XPLMAppendMenuItem(XPLMFindPluginsMenu(), "K-Pilot", nullptr, 0);
+	PluginMenu = XPLMCreateMenu("K-Pilot", XPLMFindPluginsMenu(), PluginMenuIdx, MenuHandler, nullptr);
 
 	MenuSettings = XPLMAppendMenuItem(PluginMenu, "Settings", (void*)"Settings", 0);
 	MenuNearbyAtc = XPLMAppendMenuItemWithCommand(PluginMenu, "Nearby ATC", ToggleNearbyATCWindowCommand);

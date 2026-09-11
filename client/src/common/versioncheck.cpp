@@ -193,7 +193,7 @@ QtPromise::QPromise<void> VersionCheck::DownloadInstaller()
             m_file = new QSaveFile(pathAppend(tempPath, m_fileName));
             if(!m_file->open(QIODevice::WriteOnly))
             {
-                reject(QString{"Error opening file for writing. Restart xPilot and try again."});
+                reject(QString{"Error opening file for writing. Restart K-Pilot and try again."});
                 return;
             }
 
@@ -233,7 +233,7 @@ void VersionCheck::downloadInstaller()
         emit downloadFinished();
         LaunchInstaller();
     }).fail([&](const QString &err){
-        emit errorEncountered("Error downloading xPilot update: " + err);
+        emit errorEncountered("Error downloading K-Pilot update: " + err);
     });
 }
 

@@ -49,3 +49,8 @@ target_include_directories(test_msfs2024_data PRIVATE ${CMAKE_CURRENT_SOURCE_DIR
 target_link_libraries(test_msfs2024_data PRIVATE Qt6::Core Qt6::Test)
 
 add_test(NAME msfs2024_data COMMAND test_msfs2024_data)
+
+add_test(
+    NAME private_branding
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/test_private_branding.cmake
+)

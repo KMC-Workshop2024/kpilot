@@ -121,19 +121,6 @@ GridLayout {
         }
 
         ToolbarButton {
-            id: btnFlightPlan
-            text: "Flight Plan"
-            MouseArea {
-                id: btnFlightPlanMouseArea
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    Qt.openUrlExternally("https://my.vatsim.net/pilots/flightplan")
-                }
-            }
-        }
-
-        ToolbarButton {
             id: btnSettings
             text: "Settings"
             MouseArea {

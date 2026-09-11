@@ -86,7 +86,7 @@ namespace xpilot
 
         afv_native::setLogger(gLogger, this);
 
-        QString clientName = QString("xPilot %1").arg(BuildConfig::getVersionString());
+        QString clientName = QString("K-Pilot %1").arg(BuildConfig::getVersionString());
 
         ev_base = event_base_new();
         m_client = std::make_shared<afv_native::Client>(ev_base, 2, clientName.toStdString().c_str());
@@ -100,7 +100,7 @@ namespace xpilot
                         switch(error) {
                             case APISessionError::BadPassword:
                             case APISessionError::RejectedCredentials:
-                                emit notificationPosted("Error connecting to voice server. Please check your VATSIM credentials and try again.", MessageType::Error);
+                                emit notificationPosted("Error connecting to the voice server. Please check your credentials and try again.", MessageType::Error);
                                 break;
                             case APISessionError::ConnectionError:
                                 emit notificationPosted("Error initiating voice server connection.", MessageType::Error);

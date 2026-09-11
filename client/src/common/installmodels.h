@@ -34,8 +34,6 @@ public:
     InstallModels(QObject *parent = nullptr);
     ~InstallModels();
 
-    QtPromise::QPromise<QString> GetAuthToken();
-    QtPromise::QPromise<QString> ValidateAuthToken(const QString& token);
     QtPromise::QPromise<void> DownloadModels(const QString& url);
     QtPromise::QPromise<void> UnzipModels(const QString &path);
     void CreatePluginConfig(const QString &path);

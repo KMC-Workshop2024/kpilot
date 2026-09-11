@@ -35,7 +35,7 @@ Popup {
 
     Text {
         id: promptText
-        text: "Downloading xPilot update. Please wait..."
+        text: "Downloading K-Pilot update. Please wait..."
         width: 500
         wrapMode: Text.Wrap
         font.pixelSize: 14
@@ -85,7 +85,7 @@ Popup {
 
     Text {
         id: prompt2
-        text: "xPilot will automatically close and the installer will launch after the download finishes."
+        text: "K-Pilot will automatically close and the installer will launch after the download finishes."
         width: 500
         wrapMode: Text.Wrap
         font.pixelSize: 14

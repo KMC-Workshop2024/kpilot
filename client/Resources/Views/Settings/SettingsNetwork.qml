@@ -16,7 +16,6 @@ Item {
         vatsimPassword.fieldValue = AppConfig.VatsimPasswordDecrypted
         realName.fieldValue = AppConfig.Name
         homeAirport.fieldValue = AppConfig.HomeAirport
-        networkServerList.model = AppConfig.CachedServers
     }
 
     ColumnLayout {
@@ -44,7 +43,7 @@ Item {
 
         CustomTextField {
             id: vatsimId
-            fieldLabel: "VATSIM ID:"
+            fieldLabel: "CID:"
             onValueChanged: function(value) {
                 AppConfig.VatsimId = value
                 applyChanges()
@@ -56,7 +55,7 @@ Item {
 
         CustomTextField {
             id: vatsimPassword
-            fieldLabel: "VATSIM Password:"
+            fieldLabel: "Server Password:"
             isPasswordField: true
             onValueChanged: function(value) {
                 AppConfig.VatsimPasswordDecrypted = value
@@ -84,17 +83,6 @@ Item {
             }
             validator: RegularExpressionValidator {
                 regularExpression: /[a-zA-Z0-9]{4}/
-            }
-        }
-
-        CustomComboBox {
-            id: networkServerList
-            fieldLabel: "VATSIM Server:"
-            textRole: "name"
-            valueRole: "address"
-            onSelectedValueChanged: function(value) {
-                AppConfig.ServerName = value
-                applyChanges()
             }
         }
     }

@@ -86,12 +86,12 @@ int xpilot::Main(int argc, char* argv[])
 
 #if defined(Q_OS_WIN)
     if(QOperatingSystemVersion::current() < QOperatingSystemVersion::Windows10_1809) {
-        QMessageBox::critical(nullptr, "Unsupported Windows Version", "Your Windows version is not supported. xPilot requires Windows 10 or newer.");
+        QMessageBox::critical(nullptr, "Unsupported Windows Version", "Your Windows version is not supported. K-Pilot requires Windows 10 or newer.");
         return 1;
     }
 #elif defined(Q_OS_MACOS)
     if(QOperatingSystemVersion::current() < QOperatingSystemVersion::MacOSBigSur) {
-        QMessageBox::critical(nullptr, "Unsupported macOS Version", "Your macOS version is not supported. xPilot requires macOS 11 or newer.");
+        QMessageBox::critical(nullptr, "Unsupported macOS Version", "Your macOS version is not supported. K-Pilot requires macOS 11 or newer.");
         return 1;
     }
 #endif
@@ -132,8 +132,6 @@ int xpilot::Main(int argc, char* argv[])
     QInjection::addSingleton(new AudioForVatsim);
 
     QTimer::singleShot(500, &app, [&] {
-        serverListManager.PerformServerListDownload("https://status.vatsim.net/status.json");
-        versionCheck.PerformVersionCheck();
         typeCodeDatabase.PerformTypeCodeDownload();
     });
 

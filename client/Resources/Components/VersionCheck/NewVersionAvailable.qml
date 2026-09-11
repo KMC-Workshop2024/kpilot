@@ -21,7 +21,7 @@ Popup {
 
     Text {
         id: labelAskDownload
-        text: "A new version of xPilot is available. Would you like to download and install it now?"
+        text: "A new version of K-Pilot is available. Would you like to download and install it now?"
         width: 500
         wrapMode: Text.Wrap
         font.pixelSize: 14

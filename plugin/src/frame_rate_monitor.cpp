@@ -76,7 +76,7 @@ namespace xpilot
 			std::stringstream warningMsg;
 			warningMsg
 				<< "X-Plane is not running in real-time because your frame rate is less than 20fps."
-				<< " xPilot will automatically disconnect in "
+				<< " K-Pilot will automatically disconnect in "
 				<< static_cast<int>(floor(30 - elapsed))
 				<< " seconds if this is not corrected.";
 
@@ -102,7 +102,7 @@ namespace xpilot
 			{
 				if (monitor->m_gaveFirstWarning && monitor->m_gaveSecondWarning && !monitor->m_gaveDisconnectWarning)
 				{
-					std::string msg = "Disconnecting from VATSIM because your frame rates have been less than 20fps for more than 30 seconds. Please adjust your X-Plane performance before reconnecting to the network.";
+					std::string msg = "Disconnecting because your frame rate has been below 20 fps for more than 30 seconds. Please adjust X-Plane performance before reconnecting.";
 					monitor->m_environment->AddNotificationShowPanel(msg, Colors::Yellow);
 					monitor->m_environment->ForceDisconnect(msg);
 					LOG_MSG(logMSG, msg.c_str());

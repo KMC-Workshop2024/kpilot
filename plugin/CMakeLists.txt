@@ -215,6 +215,6 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE "include/stdafx.h")
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
     PREFIX ""
-    OUTPUT_NAME "xPilot"
+    OUTPUT_NAME "K-Pilot"
     SUFFIX ".xpl"
 )

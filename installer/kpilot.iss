@@ -29,7 +29,6 @@ RestartApplications=no
 [Components]
 Name: "client"; Description: "K-Pilot desktop client"; Types: full compact custom; Flags: fixed
 Name: "xplane"; Description: "X-Plane 11/12 plugin"; Types: full
-Name: "msfs2024"; Description: "Microsoft Flight Simulator 2024 support"; Types: full
 
 [Files]
 Source: "{#KPilotClientDir}\*"; DestDir: "{app}"; Components: client; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -42,9 +41,6 @@ Name: "{autodesktop}\K-Pilot"; Filename: "{app}\K-Pilot.exe"; Tasks: desktopicon
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Shortcuts:"; Flags: unchecked
-
-[Registry]
-Root: HKCU; Subkey: "Software\KMC Workshop\K-Pilot"; ValueType: string; ValueName: "MSFS2024Enabled"; ValueData: "1"; Components: msfs2024; Flags: uninsdeletevalue
 
 [Code]
 var
@@ -81,5 +77,5 @@ end;
 
 function GetXPlanePluginDir(Param: String): String;
 begin
-  Result := AddBackslash(XPlanePage.Values[0]) + 'Resources\plugins\xPilot';
+  Result := AddBackslash(XPlanePage.Values[0]) + 'Resources\plugins\K-Pilot';
 end;

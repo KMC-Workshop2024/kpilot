@@ -30,7 +30,7 @@ Item {
 
         CustomSwitch {
             id: switchKeepWindowVisible
-            text: "Keep xPilot window visible"
+            text: "Keep K-Pilot window visible"
             font.pixelSize: 13
             onCheckedChanged: {
                 AppConfig.KeepWindowVisible = switchKeepWindowVisible.checked

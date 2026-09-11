@@ -54,7 +54,7 @@ namespace xpilot
 	SettingsWindow::SettingsWindow(WndMode _mode) :
 		XPImgWindow(_mode, WND_STYLE_SOLID, WndRect(0, 420, 600, 0))
 	{
-		SetWindowTitle(string_format("xPilot %s Settings", PLUGIN_VERSION_STRING));
+		SetWindowTitle(string_format("K-Pilot %s Settings", PLUGIN_VERSION_STRING));
 		SetWindowResizingLimits(600, 420, 600, 420);
 
 		fileBrowser.SetTitle("Browse...");
@@ -417,8 +417,8 @@ namespace xpilot
 					ImGui::Text("Audio Output Device");
 					ImGui::SameLine();
 					ImGui::ButtonIcon(reinterpret_cast<const char *>(ICON_FA_QUESTION_CIRCLE),
-									  "Choose the audio device for aircraft engine sounds in xPilot. If no device is "
-									  "selected, xPilot will default to the system's primary audio device.");
+									  "Choose the audio device for aircraft engine sounds in K-Pilot. If no device is "
+									  "selected, K-Pilot will default to the system's primary audio device.");
 					ImGui::TableSetColumnIndex(1);
 					{
 						const char* previewValue = audioDevice.empty() ? "System Default" : audioDevice.c_str();
@@ -639,7 +639,7 @@ namespace xpilot
 						ImGui::SetNextWindowSize(ImVec2(400, 150), ImGuiCond_FirstUseEver);
 						if (ImGui::BeginPopupModal("Error Saving Settings", nullptr, ImGuiWindowFlags_NoResize))
 						{
-							ImGui::TextWrapped("%s", "An error occurred while trying to save the settings.\n\nMake sure read/write permissions are set properly for the \n\"Resources > Plugins > xPilot > Resources\" folder.\n\n");
+							ImGui::TextWrapped("%s", "An error occurred while trying to save the settings.\n\nMake sure read/write permissions are set properly for the \n\"Resources > Plugins > K-Pilot > Resources\" folder.\n\n");
 
 							if (ImGui::Button("Close"))
 								ImGui::CloseCurrentPopup();
@@ -680,7 +680,7 @@ namespace xpilot
 					ImGui::AlignTextToFramePadding();
 					ImGui::Text("Override \"Contact ATC\" Command");
 					ImGui::SameLine();
-					ImGui::ButtonIcon(ICON_FA_QUESTION_CIRCLE, "If this option is enabled, xPilot will ignore the \"Contact ATC\" X-Plane Command. This is generally only useful for those who also use PilotEdge.");
+					ImGui::ButtonIcon(ICON_FA_QUESTION_CIRCLE, "If this option is enabled, K-Pilot will ignore the \"Contact ATC\" X-Plane Command. This is generally only useful for those who also use PilotEdge.");
 					ImGui::TableSetColumnIndex(1);
 					if (ImGui::Checkbox("##OverrideContactATC", &overrideContactAtcCommand))
 					{
